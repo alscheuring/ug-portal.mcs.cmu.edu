@@ -52,7 +52,12 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->plugin(FilamentFabricatorPlugin::make())
-            ->plugin(CuratorPlugin::make())
+            ->plugin(
+                CuratorPlugin::make()
+                    ->label('Media')
+                    ->pluralLabel('Media')
+                    ->navigationIcon('heroicon-o-photo')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -247,6 +252,399 @@ class AdminPanelProvider extends PanelProvider
                                 padding: 1rem;
                             }
                         }
+
+                        /* Curator Modal Fixes */
+                        .fi-modal-window {
+                            z-index: 2147483647 !important;
+                        }
+
+                        .fi-modal-backdrop {
+                            z-index: 2147483646 !important;
+                        }
+
+                        /* Ensure Curator picker modal is properly styled */
+                        [data-curator-picker-state] .fi-modal {
+                            position: fixed !important;
+                            z-index: 2147483647 !important;
+                        }
+
+                        /* Curator specific styling fixes */
+                        .curator-picker-modal .fi-modal-content {
+                            max-height: 90vh !important;
+                            overflow-y: auto !important;
+                        }
+
+                        /* Fix Curator grid layout */
+                        .curator-picker-modal .grid {
+                            display: grid !important;
+                            gap: 1rem !important;
+                        }
+
+                        /* Ensure Curator buttons and controls are visible */
+                        .curator-picker-modal button,
+                        .curator-picker-modal .fi-btn {
+                            z-index: auto !important;
+                            position: relative !important;
+                        }
+
+                        /* Fix Curator dropzone styling */
+                        .curator-picker-modal .fi-dropzone {
+                            border: 2px dashed #d1d5db !important;
+                            border-radius: 0.5rem !important;
+                            padding: 2rem !important;
+                            text-align: center !important;
+                            background: #f9fafb !important;
+                        }
+
+                        /* Fix Curator sidebar and main content areas */
+                        .curator-picker-modal .curator-sidebar {
+                            background: white !important;
+                            border-right: 1px solid #e5e7eb !important;
+                        }
+
+                        .curator-picker-modal .curator-main {
+                            background: white !important;
+                        }
+
+                        /* Ensure proper spacing and layout */
+                        .curator-picker-modal .fi-section-content-ctn {
+                            padding: 1rem !important;
+                        }
+
+                        /* Complete Curator Panel Styling */
+                        .curator-panel {
+                            background: white !important;
+                            font-family: system-ui, -apple-system, sans-serif !important;
+                        }
+                        .curator-panel-toolbar {
+                            background: #f3f4f6 !important;
+                            border-bottom: 1px solid #e5e7eb !important;
+                            padding: 1rem !important;
+                        }
+                        .curator-panel-gallery {
+                            background: white !important;
+                            padding: 1rem !important;
+                        }
+                        .curator-picker-grid {
+                            display: grid !important;
+                            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+                            gap: 1rem !important;
+                            list-style: none !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+                        .curator-picker-grid li {
+                            list-style: none !important;
+                        }
+                        .curator-picker-grid button {
+                            width: 100% !important;
+                            height: 100% !important;
+                            border: 2px solid transparent !important;
+                            border-radius: 0.5rem !important;
+                            transition: all 0.2s !important;
+                            cursor: pointer !important;
+                            background: #f3f4f6 !important;
+                        }
+                        .curator-picker-grid button:hover {
+                            border-color: #3b82f6 !important;
+                            transform: scale(1.02) !important;
+                        }
+                        .checkered {
+                            background-image:
+                                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+                                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+                                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%) !important;
+                            background-size: 20px 20px !important;
+                            background-position: 0 0, 0 10px, 10px -10px, -10px 0px !important;
+                        }
+                        .curator-panel-sidebar {
+                            background: #f9fafb !important;
+                            border-left: 1px solid #e5e7eb !important;
+                            width: 300px !important;
+                            max-width: 300px !important;
+                            flex-shrink: 0 !important;
+                        }
+                        .curator-panel-sidebar h4 {
+                            font-weight: 600 !important;
+                            font-size: 1rem !important;
+                            color: #111827 !important;
+                            margin: 0 !important;
+                            padding: 1rem 1rem 0 1rem !important;
+                        }
+                        /* Fix Filament buttons in Curator */
+                        .curator-panel .fi-btn, .curator-panel button {
+                            display: inline-flex !important;
+                            align-items: center !important;
+                            padding: 0.5rem 1rem !important;
+                            border-radius: 0.375rem !important;
+                            font-weight: 500 !important;
+                            cursor: pointer !important;
+                            border: none !important;
+                            background: #3b82f6 !important;
+                            color: white !important;
+                        }
+                        .curator-panel .fi-btn:hover, .curator-panel button:hover {
+                            background: #2563eb !important;
+                        }
+                        .curator-panel .fi-btn[color="gray"] {
+                            background: #6b7280 !important;
+                        }
+                        .curator-panel .fi-btn[color="gray"]:hover {
+                            background: #4b5563 !important;
+                        }
+                        /* Fix input styling */
+                        .curator-panel input {
+                            border: 1px solid #d1d5db !important;
+                            border-radius: 0.375rem !important;
+                            padding: 0.5rem 0.75rem !important;
+                            background: white !important;
+                        }
+                        /* Fix layout issues */
+                        .curator-panel .flex.flex-col.lg\\:flex-row {
+                            display: flex !important;
+                            flex-direction: column !important;
+                        }
+                        @media (min-width: 1024px) {
+                            .curator-panel .flex.flex-col.lg\\:flex-row {
+                                flex-direction: row !important;
+                            }
+                        }
+                        /* Fix modal backdrop issues */
+                        .fi-modal .curator-panel {
+                            pointer-events: auto !important;
+                        }
+
+                        /* Reset and fix Curator modal completely */
+                        .fi-modal .curator-panel * {
+                            box-sizing: border-box !important;
+                        }
+
+                        /* Fix search bar styling */
+                        .curator-panel input[type="search"],
+                        .curator-panel .fi-input {
+                            border: 1px solid #d1d5db !important;
+                            border-radius: 0.375rem !important;
+                            padding: 0.5rem 0.75rem !important;
+                            background: white !important;
+                            color: #111827 !important;
+                            font-size: 0.875rem !important;
+                        }
+
+                        .curator-panel .fi-input-wrapper {
+                            border: none !important;
+                            background: none !important;
+                        }
+
+                        /* Fix main layout structure */
+                        .curator-panel .flex-1.relative.flex.flex-col.lg\\:flex-row {
+                            display: flex !important;
+                            flex-direction: row !important;
+                            height: 100% !important;
+                        }
+
+                        /* Fix gallery area */
+                        .curator-panel .curator-panel-gallery {
+                            flex: 1 !important;
+                            padding: 1.5rem !important;
+                            background: white !important;
+                            overflow-y: auto !important;
+                        }
+
+                        /* Fix sidebar */
+                        .curator-panel .curator-panel-sidebar {
+                            width: 280px !important;
+                            min-width: 280px !important;
+                            max-width: 280px !important;
+                            background: #f8fafc !important;
+                            border-left: 1px solid #e2e8f0 !important;
+                            padding: 1rem !important;
+                        }
+
+                        /* Fix directory buttons to look like normal folders */
+                        .curator-panel button[wire\\:click*="handleDirectoryChange"] {
+                            width: 100% !important;
+                            height: auto !important;
+                            padding: 0.75rem !important;
+                            margin: 0.25rem 0 !important;
+                            background: white !important;
+                            border: 1px solid #e2e8f0 !important;
+                            border-radius: 0.5rem !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: flex-start !important;
+                            text-align: left !important;
+                            color: #374151 !important;
+                            font-size: 0.875rem !important;
+                            transition: all 0.2s !important;
+                        }
+
+                        .curator-panel button[wire\\:click*="handleDirectoryChange"]:hover {
+                            background: #f1f5f9 !important;
+                            border-color: #cbd5e1 !important;
+                            transform: none !important;
+                        }
+
+                        .curator-panel button[wire\\:click*="handleDirectoryChange"] .grid {
+                            display: flex !important;
+                            align-items: center !important;
+                            gap: 0.5rem !important;
+                        }
+
+                        .curator-panel button[wire\\:click*="handleDirectoryChange"] svg {
+                            width: 1.25rem !important;
+                            height: 1.25rem !important;
+                            color: #64748b !important;
+                        }
+
+                        /* Fix file grid */
+                        .curator-panel ul.curator-picker-grid {
+                            display: grid !important;
+                            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+                            gap: 1rem !important;
+                            list-style: none !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* Fix individual file items */
+                        .curator-panel ul.curator-picker-grid li {
+                            position: relative !important;
+                            aspect-ratio: 1 !important;
+                            list-style: none !important;
+                        }
+
+                        .curator-panel ul.curator-picker-grid li button {
+                            width: 100% !important;
+                            height: 100% !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+                            border: 2px solid transparent !important;
+                            border-radius: 0.5rem !important;
+                            overflow: hidden !important;
+                            background: #f8fafc !important;
+                            transition: all 0.2s ease !important;
+                        }
+
+                        .curator-panel ul.curator-picker-grid li button:hover {
+                            border-color: #3b82f6 !important;
+                            transform: scale(1.02) !important;
+                            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+                        }
+
+                        /* Fix image display */
+                        .curator-panel ul.curator-picker-grid img {
+                            width: 100% !important;
+                            height: 100% !important;
+                            object-fit: cover !important;
+                            object-position: center !important;
+                        }
+
+                        /* Fix selected state */
+                        .curator-panel ul.curator-picker-grid li button.ring-2.ring-primary-500 {
+                            border-color: #3b82f6 !important;
+                            background: rgba(59, 130, 246, 0.1) !important;
+                        }
+
+                        /* Fix toolbar */
+                        .curator-panel .curator-panel-toolbar {
+                            background: #f8fafc !important;
+                            border-bottom: 1px solid #e2e8f0 !important;
+                            padding: 1rem 1.5rem !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: space-between !important;
+                        }
+
+                        /* Fix breadcrumbs */
+                        .curator-panel ul.text-sm.flex.items-center {
+                            list-style: none !important;
+                            margin: 0 0 1rem 0 !important;
+                            padding: 0 !important;
+                            font-size: 0.875rem !important;
+                            color: #64748b !important;
+                        }
+
+                        /* Fix controls at bottom */
+                        .curator-panel .curator-panel-controls {
+                            position: fixed !important;
+                            bottom: 1rem !important;
+                            left: 50% !important;
+                            transform: translateX(-50%) !important;
+                            z-index: 1000 !important;
+                        }
+
+                        .curator-panel .curator-panel-controls > div {
+                            background: #1f2937 !important;
+                            border-radius: 0.75rem !important;
+                            padding: 1rem !important;
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+                        }
+
+                        /* Remove any conflicting styles */
+                        .curator-panel .bg-gray-700,
+                        .curator-panel .checkered {
+                            background: #f8fafc !important;
+                        }
+
+                        /* Fix close button */
+                        .curator-panel [x-on\\:click="close()"] {
+                            background: #6b7280 !important;
+                            color: white !important;
+                            border-radius: 0.375rem !important;
+                            padding: 0.5rem !important;
+                            border: none !important;
+                            width: 2.5rem !important;
+                            height: 2.5rem !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            position: relative !important;
+                            z-index: 10 !important;
+                        }
+
+                        /* Fix toolbar layout to prevent overlapping */
+                        .curator-panel .curator-panel-toolbar .flex.items-center.gap-4 {
+                            display: flex !important;
+                            align-items: center !important;
+                            gap: 1rem !important;
+                        }
+
+                        /* Fix deselect button size */
+                        .curator-panel .curator-panel-controls .fi-btn,
+                        .curator-panel .curator-panel-controls button {
+                            padding: 0.5rem 1rem !important;
+                            font-size: 0.875rem !important;
+                            height: auto !important;
+                            min-height: 2.5rem !important;
+                            display: inline-flex !important;
+                            align-items: center !important;
+                            white-space: nowrap !important;
+                        }
+
+                        /* Fix selection controls container */
+                        .curator-panel .curator-panel-controls > div {
+                            background: rgba(31, 41, 55, 0.95) !important;
+                            border-radius: 0.75rem !important;
+                            padding: 0.75rem 1rem !important;
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            gap: 0.75rem !important;
+                            backdrop-filter: blur(10px) !important;
+                        }
+
+                        /* Ensure toolbar has proper spacing */
+                        .curator-panel .curator-panel-toolbar {
+                            min-height: 4rem !important;
+                            flex-shrink: 0 !important;
+                        }
+
+                        /* Fix search input container */
+                        .curator-panel .curator-panel-toolbar label.shrink-0 {
+                            max-width: 300px !important;
+                            flex-shrink: 0 !important;
+                        }
                     </style>
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
@@ -308,6 +706,45 @@ class AdminPanelProvider extends PanelProvider
 
                             // Run once after page load
                             setTimeout(ensureNotificationVisibility, 500);
+
+                            // Fix Curator modal interaction issues
+                            function fixCuratorModal() {
+                                // Prevent modal from closing on click inside curator panel
+                                document.addEventListener("click", function(e) {
+                                    const curatorPanel = e.target.closest(".curator-panel");
+                                    if (curatorPanel) {
+                                        // Only allow explicit close button to close modal
+                                        const isCloseButton = e.target.closest("[x-on\\\\:click=\\"close()\\"]") ||
+                                                              e.target.matches("[x-on\\\\:click=\\"close()\\"]");
+                                        if (!isCloseButton) {
+                                            e.stopPropagation();
+                                        }
+                                    }
+                                });
+
+                                // Fix modal z-index when Curator opens
+                                const observer = new MutationObserver(function(mutations) {
+                                    mutations.forEach(function(mutation) {
+                                        mutation.addedNodes.forEach(function(node) {
+                                            if (node.nodeType === 1 && node.classList && node.classList.contains("curator-panel")) {
+                                                const modal = node.closest(".fi-modal");
+                                                if (modal) {
+                                                    modal.style.zIndex = "2147483647";
+                                                    modal.style.position = "fixed";
+                                                }
+                                            }
+                                        });
+                                    });
+                                });
+
+                                observer.observe(document.body, {
+                                    childList: true,
+                                    subtree: true
+                                });
+                            }
+
+                            // Initialize curator fixes
+                            fixCuratorModal();
                         });
                     </script>';
                 }

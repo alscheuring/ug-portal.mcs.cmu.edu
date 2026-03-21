@@ -72,15 +72,14 @@
 
     <!-- Main Content Area -->
     <main class="flex-1">
-        <!-- Hero Section -->
-        <div class="bg-white py-16">
+        <!-- Hero Section - Minimal for team pages -->
+        <div class="bg-white py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
-                    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
-                    @if($page->meta_description)
+                @if($page->meta_description)
+                    <div class="text-center">
                         <p class="text-xl text-gray-600 max-w-3xl mx-auto">{{ $page->meta_description }}</p>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
         </div>
 
