@@ -134,7 +134,7 @@
                     <h3 class="text-lg font-semibold mb-4">{{ $team->contact_title ?? 'Contact Us' }}</h3>
                     @if($team->contact_content)
                         <div class="text-gray-300 space-y-2">
-                            {!! nl2br(e($team->contact_content)) !!}
+                            {!! nl2br($team->contact_content) !!}
                         </div>
                     @endif
                 </div>
@@ -144,7 +144,7 @@
                     <h3 class="text-lg font-semibold mb-4">{{ $team->quick_links_title ?? 'Quick Links' }}</h3>
                     @if($team->quick_links_content)
                         <div class="text-gray-300 space-y-2">
-                            {!! nl2br(e($team->quick_links_content)) !!}
+                            {!! nl2br($team->quick_links_content) !!}
                         </div>
                     @endif
                 </div>
@@ -154,7 +154,7 @@
                     <h3 class="text-lg font-semibold mb-4">{{ $team->help_box_title ?? 'Need Help?' }}</h3>
                     @if($team->help_box_content)
                         <div class="text-gray-300 space-y-2">
-                            {!! nl2br(e($team->help_box_content)) !!}
+                            {!! nl2br($team->help_box_content) !!}
                         </div>
                     @endif
                 </div>
