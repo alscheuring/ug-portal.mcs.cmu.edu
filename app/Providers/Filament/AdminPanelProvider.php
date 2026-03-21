@@ -18,10 +18,11 @@ use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Z3d0X\FilamentFabricator\FilamentFabricatorPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -49,13 +50,14 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            ->plugin(FilamentFabricatorPlugin::make())
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                PreventRequestForgery::class,
+                VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
@@ -198,6 +200,50 @@ class AdminPanelProvider extends PanelProvider
                             bottom: 1rem !important;
                             right: 1rem !important;
                             z-index: 2147483647 !important;
+                        }
+
+                        /* Page builder and form layout improvements */
+                        .fi-section {
+                            margin-bottom: 1.5rem;
+                        }
+
+                        .fi-section-content {
+                            padding: 1.25rem;
+                        }
+
+                        /* Page builder specific styles */
+                        [data-field-wrapper="blocks"] {
+                            min-height: 300px;
+                        }
+
+                        .filament-fabricator-page-builder {
+                            border: 1px solid rgb(209 213 219);
+                            border-radius: 0.375rem;
+                            padding: 1rem;
+                            background: rgb(249 250 251);
+                        }
+
+                        /* Rich editor improvements */
+                        .fi-fo-rich-editor .ProseMirror {
+                            min-height: 150px;
+                        }
+
+                        /* Form layout improvements */
+                        .fi-fo-section-header {
+                            border-bottom: 1px solid rgb(229 231 235);
+                            padding-bottom: 0.75rem;
+                            margin-bottom: 1rem;
+                        }
+
+                        /* Mobile responsive adjustments */
+                        @media (max-width: 1023px) {
+                            .fi-section {
+                                margin-bottom: 1rem;
+                            }
+
+                            .fi-section-content {
+                                padding: 1rem;
+                            }
                         }
                     </style>
                     <script>

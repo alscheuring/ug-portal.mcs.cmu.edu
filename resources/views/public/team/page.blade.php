@@ -3,25 +3,49 @@
 @endphp
 
 <x-layouts.public :team="$team" :navigation="$navigation" :breadcrumbs="$breadcrumbs" :page="$page">
+    <!-- Full-width hero blocks -->
+    @if($page->blocks)
+        @foreach($page->blocks as $block)
+            @if($block['type'] === 'hero')
+                @include('filament.fabricator.page-blocks.' . $block['type'], $block['data'])
+            @endif
+        @endforeach
+    @endif
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Main Content -->
-            <div class="lg:col-span-3">
-                <article class="prose prose-lg max-w-none">
-                    <!-- Page Header -->
-                    <header class="mb-8">
-                        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
-                        <div class="flex items-center text-sm text-gray-500">
-                            <span>Last updated {{ $page->updated_at->format('F j, Y') }}</span>
-                            <span class="mx-2">•</span>
-                            <span>By {{ $page->author->name }}</span>
-                        </div>
-                    </header>
+            <div class="lg:col-span-3 order-1" style="background-color: rgba(255, 0, 0, 0.1);">
+                <!-- Non-hero Page Builder Blocks -->
+                @if($page->blocks)
+                    <div class="space-y-8 mb-8">
+                        @foreach($page->blocks as $block)
+                            @if($block['type'] !== 'hero')
+                                @include('filament.fabricator.page-blocks.' . $block['type'], $block['data'])
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+
+                <article class="max-w-none">
+                    <!-- Page Header (only show if no page builder blocks) -->
+                    @if(!$page->blocks)
+                        <header class="mb-8">
+                            <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span>Last updated {{ $page->updated_at->format('F j, Y') }}</span>
+                                <span class="mx-2">•</span>
+                                <span>By {{ $page->author->name }}</span>
+                            </div>
+                        </header>
+                    @endif
 
                     <!-- Page Content -->
-                    <div class="prose prose-lg prose-blue max-w-none prose-headings:scroll-mt-6" id="page-content">
-                        {!! $page->content !!}
-                    </div>
+                    @if($page->content)
+                        <div class="prose prose-lg prose-blue max-w-none prose-headings:scroll-mt-6" id="page-content">
+                            {!! $page->content !!}
+                        </div>
+                    @endif
                 </article>
 
                 <!-- Child Pages Navigation -->
@@ -84,7 +108,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="space-y-6">
+            <div class="lg:col-span-1 order-2 space-y-6" style="background-color: rgba(0, 0, 255, 0.1);">
                 <!-- Table of Contents -->
                 <div class="eureka-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">On This Page</h3>
@@ -194,8 +218,8 @@
         // Generate Table of Contents
         document.addEventListener('DOMContentLoaded', function() {
             const tocContainer = document.getElementById('toc');
-            // Only look for headings in the main page content area, not sidebar
-            const headings = document.querySelectorAll('#page-content h2, #page-content h3, #page-content h4');
+            // Look for headings in page builder blocks and page content
+            const headings = document.querySelectorAll('.text-block h2, .text-block h3, .text-block h4, #page-content h2, #page-content h3, #page-content h4');
 
             if (headings.length === 0) {
                 tocContainer.innerHTML = '<p class="text-gray-500 text-sm italic">No headings found on this page</p>';

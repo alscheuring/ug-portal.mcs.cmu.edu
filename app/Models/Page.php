@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Z3d0X\FilamentFabricator\Models\Concerns\HandlesPageUrls;
+use Z3d0X\FilamentFabricator\Models\Contracts\Page as PageContract;
 
-#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'content', 'is_published', 'published_at', 'team_id', 'author_id', 'parent_id', 'sort_order'])]
-class Page extends Model
+#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'content', 'blocks', 'is_published', 'published_at', 'team_id', 'author_id', 'parent_id', 'sort_order'])]
+class Page extends Model implements PageContract
 {
-    use HasFactory, SoftDeletes;
+    use HandlesPageUrls, HasFactory, SoftDeletes;
 
     /**
      * The accessors to append to the model's array form.
@@ -29,6 +31,7 @@ class Page extends Model
         return [
             'is_published' => 'boolean',
             'published_at' => 'datetime',
+            'blocks' => 'array',
         ];
     }
 
@@ -62,6 +65,16 @@ class Page extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Page::class, 'parent_id')->orderBy('sort_order');
+    }
+
+    /**
+     * Get all child pages recursively (required by Fabricator).
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->children()
+            ->select('id', 'slug', 'title', 'parent_id')
+            ->with('allChildren:id,slug,title,parent_id');
     }
 
     /**

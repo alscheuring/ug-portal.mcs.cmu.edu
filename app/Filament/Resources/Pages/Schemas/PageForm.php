@@ -12,14 +12,21 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Z3d0X\FilamentFabricator\Forms\Components\PageBuilder;
 
 class PageForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns([
+                'default' => 1,
+                'lg' => 2,
+            ])
             ->components([
-                Section::make('Page Content')
+                // Left Column - Main Content
+                Section::make('Basic Information')
+                    ->icon('heroicon-m-document-text')
                     ->schema([
                         TextInput::make('title')
                             ->required()
@@ -36,8 +43,7 @@ class PageForm
                                         $set('slug', $slug);
                                     }
                                 }
-                            })
-                            ->columnSpanFull(),
+                            }),
 
                         TextInput::make('slug')
                             ->required()
@@ -50,12 +56,25 @@ class PageForm
                                     : auth()->user()->current_team_id;
 
                                 return $rule->where('team_id', $teamId);
-                            })
-                            ->columnSpanFull(),
+                            }),
+                    ])
+                    ->columns(1)
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 2,
+                    ]),
+
+                Section::make('Page Content')
+                    ->icon('heroicon-m-squares-plus')
+                    ->description('Build your page using the drag-and-drop page builder or add additional content with the rich text editor.')
+                    ->schema([
+                        PageBuilder::make('blocks')
+                            ->label('Page Builder')
+                            ->helperText('Drag and drop components to build your page layout'),
 
                         RichEditor::make('content')
-                            ->required()
-                            ->columnSpanFull()
+                            ->label('Additional Content')
+                            ->helperText('This content will be displayed after the page builder blocks')
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -70,9 +89,48 @@ class PageForm
                                 'h4',
                                 'codeBlock',
                             ]),
+                    ])
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 2,
                     ]),
 
-                Section::make('Page Hierarchy')
+                // Right Column - Settings & Metadata
+                Section::make('Publishing Settings')
+                    ->icon('heroicon-m-eye')
+                    ->schema([
+                        Select::make('team_id')
+                            ->relationship('team', 'name')
+                            ->required()
+                            ->visible(fn () => auth()->user()->isSuperAdmin())
+                            ->helperText('Choose the team this page belongs to'),
+
+                        Hidden::make('team_id')
+                            ->default(fn () => auth()->user()->isSuperAdmin() ? null : auth()->user()->current_team_id)
+                            ->visible(fn () => ! auth()->user()->isSuperAdmin()),
+
+                        Hidden::make('author_id')
+                            ->default(fn () => auth()->id()),
+
+                        Toggle::make('is_published')
+                            ->label('Published')
+                            ->helperText('Make this page visible to users')
+                            ->inline(false),
+
+                        DateTimePicker::make('published_at')
+                            ->label('Publish Date')
+                            ->helperText('Schedule when this page should go live')
+                            ->default(now())
+                            ->native(false),
+                    ])
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 1,
+                    ]),
+
+                Section::make('Page Organization')
+                    ->icon('heroicon-m-folder-open')
+                    ->collapsible()
                     ->schema([
                         Select::make('parent_id')
                             ->label('Parent Page')
@@ -91,7 +149,7 @@ class PageForm
                                     ->orderBy('title')
                                     ->pluck('title', 'id');
                             })
-                            ->helperText('Select a parent page to create a hierarchical structure'),
+                            ->helperText('Create a hierarchical page structure'),
 
                         TextInput::make('sort_order')
                             ->label('Sort Order')
@@ -99,13 +157,19 @@ class PageForm
                             ->default(0)
                             ->helperText('Lower numbers appear first in navigation'),
                     ])
-                    ->columns(2),
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 1,
+                    ]),
 
                 Section::make('Page Sidebars')
-                    ->description('Select which sidebar boxes will appear on this page')
+                    ->icon('heroicon-m-view-columns')
+                    ->description('Manage sidebar components for this page')
+                    ->collapsible()
+                    ->collapsed()
                     ->schema([
                         Select::make('sidebar_ids')
-                            ->label('Sidebars')
+                            ->label('Active Sidebars')
                             ->multiple()
                             ->options(function ($get) {
                                 $teamId = auth()->user()->isSuperAdmin()
@@ -122,50 +186,36 @@ class PageForm
                                     ->pluck('name', 'id');
                             })
                             ->searchable()
-                            ->placeholder('Select sidebars to display on this page')
-                            ->helperText('Select multiple sidebars. They will appear in the order selected.')
-                            ->columnSpanFull(),
+                            ->placeholder('Choose sidebars to display')
+                            ->helperText('Sidebars appear in the order selected'),
                     ])
-                    ->collapsible(),
-
-                Section::make('SEO & Metadata')
-                    ->schema([
-                        TextInput::make('meta_title')
-                            ->maxLength(60)
-                            ->helperText('Page title for search engines (leave blank to use page title)')
-                            ->columnSpanFull(),
-
-                        TextInput::make('meta_description')
-                            ->maxLength(160)
-                            ->helperText('Brief description for search engines')
-                            ->columnSpanFull(),
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 1,
                     ]),
 
-                Section::make('Publishing')
+                Section::make('SEO & Metadata')
+                    ->icon('heroicon-m-magnifying-glass')
+                    ->description('Optimize this page for search engines')
+                    ->collapsible()
+                    ->collapsed()
                     ->schema([
-                        Select::make('team_id')
-                            ->relationship('team', 'name')
-                            ->required()
-                            ->visible(fn () => auth()->user()->isSuperAdmin())
-                            ->helperText('SuperAdmins can choose any team, TeamAdmins are automatically assigned to their team'),
+                        TextInput::make('meta_title')
+                            ->label('SEO Title')
+                            ->maxLength(60)
+                            ->helperText('Page title for search engines (60 chars max)')
+                            ->suffixIcon('heroicon-m-hashtag'),
 
-                        Hidden::make('team_id')
-                            ->default(fn () => auth()->user()->isSuperAdmin() ? null : auth()->user()->current_team_id)
-                            ->visible(fn () => ! auth()->user()->isSuperAdmin()),
-
-                        Hidden::make('author_id')
-                            ->default(fn () => auth()->id()),
-
-                        Toggle::make('is_published')
-                            ->label('Published')
-                            ->helperText('Toggle to publish/unpublish this page'),
-
-                        DateTimePicker::make('published_at')
-                            ->label('Publish Date')
-                            ->helperText('Schedule when this page should be published (leave blank for immediate)')
-                            ->default(now()),
+                        TextInput::make('meta_description')
+                            ->label('SEO Description')
+                            ->maxLength(160)
+                            ->helperText('Brief description for search engines (160 chars max)')
+                            ->suffixIcon('heroicon-m-document-text'),
                     ])
-                    ->columns(2),
+                    ->columnSpan([
+                        'default' => 1,
+                        'lg' => 1,
+                    ]),
             ]);
     }
 }
