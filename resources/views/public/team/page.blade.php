@@ -15,7 +15,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Main Content -->
-            <div class="lg:col-span-3 order-1" style="background-color: rgba(255, 0, 0, 0.1);">
+            <div class="lg:col-span-3">
                 <!-- Non-hero Page Builder Blocks -->
                 @if($page->blocks)
                     <div class="space-y-8 mb-8">
@@ -108,7 +108,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="lg:col-span-1 order-2 space-y-6" style="background-color: rgba(0, 0, 255, 0.1);">
+            <div class="space-y-6">
                 <!-- Table of Contents -->
                 <div class="eureka-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">On This Page</h3>
