@@ -65,8 +65,24 @@ class PageForm
 
                 Section::make('Page Content')
                     ->icon('heroicon-m-squares-plus')
-                    ->description('Build your page using the drag-and-drop page builder.')
+                    ->description('Choose a layout and build your page using the drag-and-drop page builder.')
                     ->schema([
+                        Select::make('layout')
+                            ->label('Page Layout')
+                            ->options([
+                                'default' => '📄 Default Layout - Standard with right sidebar',
+                                'full-width' => '🖼️ Full Width - No sidebar, perfect for landing pages',
+                                'centered' => '📝 Centered Content - Focused narrow content',
+                                'sidebar-left' => '📋 Left Sidebar - Navigation-heavy pages',
+                                'team' => '👥 Team Layout - Optimized for team member pages',
+                                'leadership' => '🏆 Leadership Layout - Grid-based leadership showcase',
+                            ])
+                            ->default('default')
+                            ->required()
+                            ->helperText('Choose how your page content will be displayed')
+                            ->native(false)
+                            ->searchable(false),
+
                         PageBuilder::make('blocks')
                             ->label('Page Builder')
                             ->helperText('Drag and drop components to build your page layout'),

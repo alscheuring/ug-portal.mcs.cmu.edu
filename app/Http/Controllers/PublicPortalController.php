@@ -78,7 +78,10 @@ class PublicPortalController extends Controller
                 ->get();
         }
 
-        return view('public.team.page', compact('team', 'page', 'navigation', 'relatedPages'));
+        // Use the selected layout, fallback to default if not set
+        $layout = $page->layout ?? 'default';
+
+        return view("filament.fabricator.layouts.{$layout}", compact('team', 'page', 'navigation', 'relatedPages'));
     }
 
     /**

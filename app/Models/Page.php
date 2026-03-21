@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,10 +12,28 @@ use Illuminate\Support\Str;
 use Z3d0X\FilamentFabricator\Models\Concerns\HandlesPageUrls;
 use Z3d0X\FilamentFabricator\Models\Contracts\Page as PageContract;
 
-#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'content', 'blocks', 'is_published', 'published_at', 'team_id', 'author_id', 'parent_id', 'sort_order'])]
 class Page extends Model implements PageContract
 {
     use HandlesPageUrls, HasFactory, SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     */
+    protected $fillable = [
+        'title',
+        'slug',
+        'meta_title',
+        'meta_description',
+        'content',
+        'blocks',
+        'layout',
+        'is_published',
+        'published_at',
+        'team_id',
+        'author_id',
+        'parent_id',
+        'sort_order'
+    ];
 
     /**
      * The accessors to append to the model's array form.
