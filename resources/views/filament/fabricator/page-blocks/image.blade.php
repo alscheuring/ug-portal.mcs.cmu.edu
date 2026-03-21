@@ -32,7 +32,10 @@
         <div class="{{ $alignmentClass }}">
             @if($image)
                 <div class="{{ $alignment === 'full' ? '' : 'inline-block' }} {{ $sizeClass }}">
-                    <img src="{{ Storage::url($image) }}"
+                    @php
+                        $media = \Awcodes\Curator\Models\Media::find($image);
+                    @endphp
+                    <img src="{{ $media ? $media->url : '' }}"
                          alt="{{ $alt_text }}"
                          class="w-full h-auto rounded-lg shadow-lg">
 

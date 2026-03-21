@@ -3,10 +3,10 @@
 namespace App\Filament\Fabricator\PageBlocks;
 
 use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Z3d0X\FilamentFabricator\PageBlocks\PageBlock;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 
 class HeroBlock extends PageBlock
 {
@@ -35,10 +35,10 @@ class HeroBlock extends PageBlock
                     ->placeholder('https://example.com or /internal-page')
                     ->url(),
 
-                FileUpload::make('background_image')
+                CuratorPicker::make('background_image')
                     ->label('Background Image')
-                    ->image()
-                    ->directory('hero-backgrounds'),
+                    ->buttonLabel('Select Background')
+                    ->helperText('Choose a background image for the hero section'),
             ]);
     }
 

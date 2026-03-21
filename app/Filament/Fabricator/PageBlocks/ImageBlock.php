@@ -3,11 +3,11 @@
 namespace App\Filament\Fabricator\PageBlocks;
 
 use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Z3d0X\FilamentFabricator\PageBlocks\PageBlock;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 
 class ImageBlock extends PageBlock
 {
@@ -17,11 +17,11 @@ class ImageBlock extends PageBlock
     {
         return $block
             ->schema([
-                FileUpload::make('image')
+                CuratorPicker::make('image')
                     ->label('Image')
                     ->required()
-                    ->image()
-                    ->directory('page-images'),
+                    ->buttonLabel('Select Image')
+                    ->helperText('Choose from the media library or upload a new image'),
 
                 TextInput::make('alt_text')
                     ->label('Alt Text')

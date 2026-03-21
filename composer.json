@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "awcodes/filament-curator": "^5.0",
         "doctrine/dbal": "*",
         "filament/filament": "^5.0",
         "lab404/laravel-impersonate": "^1.7",

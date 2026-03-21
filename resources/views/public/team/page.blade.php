@@ -40,12 +40,6 @@
                         </header>
                     @endif
 
-                    <!-- Page Content -->
-                    @if($page->content)
-                        <div class="prose prose-lg prose-blue max-w-none prose-headings:scroll-mt-6" id="page-content">
-                            {!! $page->content !!}
-                        </div>
-                    @endif
                 </article>
 
                 <!-- Child Pages Navigation -->
@@ -218,8 +212,8 @@
         // Generate Table of Contents
         document.addEventListener('DOMContentLoaded', function() {
             const tocContainer = document.getElementById('toc');
-            // Look for headings in page builder blocks and page content
-            const headings = document.querySelectorAll('.text-block h2, .text-block h3, .text-block h4, #page-content h2, #page-content h3, #page-content h4');
+            // Look for headings in page builder blocks
+            const headings = document.querySelectorAll('.text-block h2, .text-block h3, .text-block h4');
 
             if (headings.length === 0) {
                 tocContainer.innerHTML = '<p class="text-gray-500 text-sm italic">No headings found on this page</p>';

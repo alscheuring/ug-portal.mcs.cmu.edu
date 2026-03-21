@@ -6,7 +6,6 @@ use App\Models\Page;
 use App\Models\Sidebar;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -66,29 +65,11 @@ class PageForm
 
                 Section::make('Page Content')
                     ->icon('heroicon-m-squares-plus')
-                    ->description('Build your page using the drag-and-drop page builder or add additional content with the rich text editor.')
+                    ->description('Build your page using the drag-and-drop page builder.')
                     ->schema([
                         PageBuilder::make('blocks')
                             ->label('Page Builder')
                             ->helperText('Drag and drop components to build your page layout'),
-
-                        RichEditor::make('content')
-                            ->label('Additional Content')
-                            ->helperText('This content will be displayed after the page builder blocks')
-                            ->toolbarButtons([
-                                'bold',
-                                'italic',
-                                'underline',
-                                'strike',
-                                'link',
-                                'bulletList',
-                                'orderedList',
-                                'blockquote',
-                                'h2',
-                                'h3',
-                                'h4',
-                                'codeBlock',
-                            ]),
                     ])
                     ->columnSpan([
                         'default' => 1,

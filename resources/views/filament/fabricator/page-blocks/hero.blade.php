@@ -6,12 +6,16 @@
     'background_image' => null,
 ])
 
+@php
+    $backgroundMedia = $background_image ? \Awcodes\Curator\Models\Media::find($background_image) : null;
+@endphp
+
 <div class="hero-block relative bg-gray-900 text-white py-24"
-     @if($background_image)
-         style="background-image: url('{{ Storage::url($background_image) }}'); background-size: cover; background-position: center;"
+     @if($backgroundMedia)
+         style="background-image: url('{{ $backgroundMedia->url }}'); background-size: cover; background-position: center;"
      @endif>
 
-    @if($background_image)
+    @if($backgroundMedia)
         <div class="absolute inset-0 bg-black bg-opacity-40"></div>
     @endif
 

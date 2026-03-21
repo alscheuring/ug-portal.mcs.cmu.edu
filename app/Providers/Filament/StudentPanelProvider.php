@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Z3d0X\FilamentFabricator\FilamentFabricatorPlugin;
+use Awcodes\Curator\CuratorPlugin;
 
 class StudentPanelProvider extends PanelProvider
 {
@@ -48,6 +49,7 @@ class StudentPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->plugin(FilamentFabricatorPlugin::make())
+            ->plugin(CuratorPlugin::make())
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
