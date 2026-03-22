@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\LayupPage;
 use App\Models\Menu;
-use App\Models\Page;
 use App\Models\Poll;
 use App\Models\Team;
 
@@ -33,11 +33,10 @@ class PublicPortalController extends Controller
         // Get navigation from Menu Manager
         $navigation = Menu::getTeamNavigation($team->id);
 
-        // Get featured pages (root pages)
-        $featuredPages = Page::forTeam($team->id)
+        // Get featured pages
+        $featuredPages = LayupPage::forTeam($team->id)
             ->published()
-            ->rootPages()
-            ->orderBy('sort_order')
+            ->orderBy('title')
             ->limit(6)
             ->get();
 
@@ -45,43 +44,12 @@ class PublicPortalController extends Controller
     }
 
     /**
-     * Display a specific page.
+     * Display a specific page (redirects to new Layup page controller).
      */
     public function page(Team $team, string $slug)
     {
-        $page = Page::forTeam($team->id)
-            ->published()
-            ->where('slug', $slug)
-            ->with('sidebars')
-            ->firstOrFail();
-
-        // Get navigation from Menu Manager
-        $navigation = Menu::getTeamNavigation($team->id);
-
-        // Get related pages (siblings or children)
-        $relatedPages = [];
-        if ($page->parent_id) {
-            // Get sibling pages
-            $relatedPages = Page::forTeam($team->id)
-                ->published()
-                ->where('parent_id', $page->parent_id)
-                ->where('id', '!=', $page->id)
-                ->orderBy('sort_order')
-                ->limit(4)
-                ->get();
-        } else {
-            // Get child pages
-            $relatedPages = $page->children()
-                ->published()
-                ->orderBy('sort_order')
-                ->limit(4)
-                ->get();
-        }
-
-        // Use the selected layout, fallback to default if not set
-        $layout = $page->layout ?? 'default';
-
-        return view("filament.fabricator.layouts.{$layout}", compact('team', 'page', 'navigation', 'relatedPages'));
+        // Redirect to the new Layup page route
+        return redirect()->route('public.pages.show', [$team->slug, $slug]);
     }
 
     /**

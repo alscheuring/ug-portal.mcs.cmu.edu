@@ -46,4 +46,12 @@ class Team extends Model
     {
         return $this->hasMany(User::class, 'current_team_id');
     }
+
+    /**
+     * Get the Layup pages that belong to this team.
+     */
+    public function layupPages(): HasMany
+    {
+        return $this->hasMany(LayupPage::class);
+    }
 }

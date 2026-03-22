@@ -105,6 +105,13 @@ Route::prefix('{team:slug}')->name('public.')->group(function () {
     Route::get('/announcements/{slug}', [PublicPortalController::class, 'announcement'])->name('team.announcements.show');
     Route::get('/polls', [PublicPortalController::class, 'polls'])->name('team.polls.index');
     Route::get('/polls/{poll}', [PublicPortalController::class, 'poll'])->name('team.polls.show');
+
+    // Layup pages routes
+    Route::prefix('pages')->name('pages.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\LayupPageController::class, 'index'])->name('index');
+        Route::get('/{slug}', [\App\Http\Controllers\LayupPageController::class, 'show'])->name('show');
+    });
+
     Route::get('/{slug}', [PublicPortalController::class, 'page'])->name('team.page');
 });
 

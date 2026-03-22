@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\MenuItems\Schemas;
 
+use App\Models\LayupPage;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\Page;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -103,8 +103,8 @@ class MenuItemForm
                                     return [];
                                 }
 
-                                return Page::where('team_id', $menu->team_id)
-                                    ->where('is_published', true)
+                                return LayupPage::where('team_id', $menu->team_id)
+                                    ->where('status', 'published')
                                     ->orderBy('title')
                                     ->pluck('title', 'id');
                             })

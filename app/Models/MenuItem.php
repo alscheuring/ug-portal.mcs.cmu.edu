@@ -51,7 +51,7 @@ class MenuItem extends Model
 
     public function page(): BelongsTo
     {
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(LayupPage::class);
     }
 
     // Scopes
@@ -71,7 +71,7 @@ class MenuItem extends Model
         switch ($this->link_type) {
             case 'page':
                 if ($this->page) {
-                    return route('public.team.page', [
+                    return route('public.pages.show', [
                         $this->menu->team->slug,
                         $this->page->slug,
                     ]);

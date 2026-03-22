@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97d1b2e6acf901b7514a47eefe249623",
+    "content-hash": "f3a640f571812678f1789afa0a1db32a",
     "packages": [
         {
             "name": "awcodes/filament-curator",
@@ -584,6 +584,61 @@
                 }
             ],
             "time": "2026-03-20T21:10:52+00:00"
+        },
+        {
+            "name": "crumbls/layup",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Crumbls/layup.git",
+                "reference": "02eb1b64114dc52eedbe4ec6be315e8f7d8518a6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Crumbls/layup/zipball/02eb1b64114dc52eedbe4ec6be315e8f7d8518a6",
+                "reference": "02eb1b64114dc52eedbe4ec6be315e8f7d8518a6",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "laravel/framework": "^12.0 || ^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.27",
+                "orchestra/testbench": "^10.0 || ^11.0",
+                "pestphp/pest": "^3.0",
+                "rector/rector": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Crumbls\\Layup\\LayupServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crumbls\\Layup\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A visual page builder plugin for Filament 5 — Divi-style grid layouts with extensible widgets.",
+            "support": {
+                "issues": "https://github.com/Crumbls/layup/issues",
+                "source": "https://github.com/Crumbls/layup/tree/v1.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Crumbls",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-19T14:18:51+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -5133,80 +5188,6 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
-            "name": "pboivin/filament-peek",
-            "version": "v4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pboivin/filament-peek.git",
-                "reference": "f60c0f6041af9bdc94817f85bce1bce345771cce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pboivin/filament-peek/zipball/f60c0f6041af9bdc94817f85bce1bce345771cce",
-                "reference": "f60c0f6041af9bdc94817f85bce1bce345771cce",
-                "shasum": ""
-            },
-            "require": {
-                "filament/filament": "^5.0",
-                "illuminate/contracts": "^11.0 || ^12.0 || ^13.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.15"
-            },
-            "require-dev": {
-                "larastan/larastan": "^2.0 || ^3.0",
-                "laravel/pint": "^1.0",
-                "nunomaduro/collision": "^7.9 || ^8.0",
-                "orchestra/testbench": "^8.0 || ^9.0 || ^10.0 || ^11.0",
-                "pestphp/pest": "^2.0 || ^3.7 || ^4.4",
-                "pestphp/pest-plugin-arch": "^2.0 || ^3.0 || ^4.0",
-                "pestphp/pest-plugin-laravel": "^2.0 || ^3.1 || ^4.1",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0 || ^2.0",
-                "phpstan/phpstan-phpunit": "^1.0 || ^2.0",
-                "spatie/invade": "^1.1 || ^2.1",
-                "symfony/polyfill-php82": "^1.28"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Pboivin\\FilamentPeek\\FilamentPeekServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Pboivin\\FilamentPeek\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Patrick Boivin",
-                    "email": "pboivin@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Full-screen page preview modal for Filament",
-            "homepage": "https://github.com/pboivin/filament-peek",
-            "keywords": [
-                "filament",
-                "laravel",
-                "modal",
-                "plugin",
-                "preview",
-                "previewer"
-            ],
-            "support": {
-                "issues": "https://github.com/pboivin/filament-peek/issues",
-                "source": "https://github.com/pboivin/filament-peek/tree/v4.1.0"
-            },
-            "time": "2026-03-17T22:58:57+00:00"
-        },
-        {
             "name": "phpoption/phpoption",
             "version": "1.9.5",
             "source": {
@@ -9454,84 +9435,6 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
-        },
-        {
-            "name": "z3d0x/filament-fabricator",
-            "version": "v4.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Z3d0X/filament-fabricator.git",
-                "reference": "2053b4100b000f3d19f1c99c274bf562fefccae1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Z3d0X/filament-fabricator/zipball/2053b4100b000f3d19f1c99c274bf562fefccae1",
-                "reference": "2053b4100b000f3d19f1c99c274bf562fefccae1",
-                "shasum": ""
-            },
-            "require": {
-                "filament/filament": "^5.0",
-                "illuminate/contracts": "^11.0 | ^12.0",
-                "livewire/livewire": "^4.0",
-                "pboivin/filament-peek": "^4.0",
-                "php": "^8.3",
-                "spatie/laravel-package-tools": "^1.13.5"
-            },
-            "require-dev": {
-                "driftingly/rector-laravel": "^2.0",
-                "filament/upgrade": "^5.0",
-                "larastan/larastan": "^2.9 | ^3.7",
-                "laravel/pint": "^1.24",
-                "nunomaduro/collision": "^8.0",
-                "orchestra/testbench": "^10.0",
-                "pestphp/pest": "^4.0",
-                "pestphp/pest-plugin-laravel": "^4.0",
-                "pestphp/pest-plugin-livewire": "^4.0",
-                "phpstan/phpstan-deprecation-rules": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "rector/rector": "^2.1",
-                "spatie/laravel-ray": "^1.26"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "FilamentFabricator": "Z3d0X\\FilamentFabricator\\Facades\\FilamentFabricator"
-                    },
-                    "providers": [
-                        "Z3d0X\\FilamentFabricator\\FilamentFabricatorServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Z3d0X\\FilamentFabricator\\": "src",
-                    "Z3d0X\\FilamentFabricator\\Database\\Factories\\": "database/factories"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ziyaan Hassan",
-                    "email": "ziyaan2010@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Block-Based Page Builder Skeleton for your Filament Apps",
-            "homepage": "https://github.com/z3d0x/filament-fabricator",
-            "keywords": [
-                "Z3d0X",
-                "filament-fabricator",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/Z3d0X/filament-fabricator/issues",
-                "source": "https://github.com/Z3d0X/filament-fabricator/tree/v4.0.0"
-            },
-            "time": "2026-02-16T13:52:13+00:00"
         }
     ],
     "packages-dev": [

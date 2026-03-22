@@ -16,19 +16,26 @@ use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Filament\Notifications\Livewire\Notifications;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Z3d0X\FilamentFabricator\FilamentFabricatorPlugin;
+use App\Filament\Plugins\CustomLayupPlugin;
 use Awcodes\Curator\CuratorPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // Configure notification positioning - bottom right corner
+        Notifications::alignment(Alignment::End);
+        Notifications::verticalAlignment(VerticalAlignment::End);
+
         return $panel
             ->default()
             ->id('admin')
@@ -51,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
-            ->plugin(FilamentFabricatorPlugin::make())
+            ->plugin(CustomLayupPlugin::make())
             ->plugin(
                 CuratorPlugin::make()
                     ->label('Media')
@@ -184,28 +191,8 @@ class AdminPanelProvider extends PanelProvider
                         /* Hide default Filament user avatar since we have our own in the header */
                         .fi-avatar, .fi-user-avatar { display: none !important; }
 
-                        /* Position notifications in bottom right corner */
+                        /* Ensure notifications appear above custom header */
                         .fi-notifications {
-                            position: fixed !important;
-                            bottom: 1rem !important;
-                            right: 1rem !important;
-                            top: auto !important;
-                            left: auto !important;
-                            z-index: 2147483647 !important;
-                            max-width: 400px !important;
-                        }
-
-                        /* Style individual notification items */
-                        .fi-notification {
-                            margin-bottom: 0.5rem !important;
-                        }
-
-                        /* Ensure notifications appear above header */
-                        .fi-layout .fi-notifications,
-                        .fi-main .fi-notifications {
-                            position: fixed !important;
-                            bottom: 1rem !important;
-                            right: 1rem !important;
                             z-index: 2147483647 !important;
                         }
 
@@ -696,16 +683,6 @@ class AdminPanelProvider extends PanelProvider
                             });
                             document.body.insertBefore(header, document.body.firstChild);
 
-                            // Minimal JavaScript - only ensure z-index without moving elements
-                            function ensureNotificationVisibility() {
-                                document.querySelectorAll(".fi-notifications").forEach(notification => {
-                                    // Only apply z-index fix, don\'t move or manipulate content
-                                    notification.style.setProperty("z-index", "2147483647", "important");
-                                });
-                            }
-
-                            // Run once after page load
-                            setTimeout(ensureNotificationVisibility, 500);
 
                             // Fix Curator modal interaction issues
                             function fixCuratorModal() {
