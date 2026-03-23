@@ -390,6 +390,6 @@
     @stack('scripts')
 
     <!-- Impersonation Banner -->
-    <x-impersonate::banner/>
+    <x-impersonate-banner/>
 </body>
 </html>

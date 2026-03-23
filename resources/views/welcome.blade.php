@@ -448,6 +448,6 @@
         @endif
 
         <!-- Impersonation Banner -->
-        <x-impersonate::banner/>
+        <x-impersonate-banner/>
     </body>
 </html>

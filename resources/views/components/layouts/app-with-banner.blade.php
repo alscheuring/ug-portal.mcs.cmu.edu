@@ -14,7 +14,7 @@
     </x-layouts::app>
 
     <!-- Impersonation Banner -->
-    <x-impersonate::banner/>
+    <x-impersonate-banner/>
 
     @stack('scripts')
 </body>
