@@ -6,13 +6,6 @@ use STS\FilamentImpersonate\Facades\Impersonation;
 // Show banner whenever impersonation is active, regardless of context
 $isImpersonating = Impersonation::isImpersonating();
 
-// Debug info (remove in production)
-$debugInfo = [
-    'isImpersonating' => $isImpersonating,
-    'sessionKeys' => collect(session()->all())->keys()->filter(fn($key) => str_contains(strtolower($key), 'imperson'))->values(),
-    'currentUser' => auth()->check() ? auth()->user()->email : 'No user',
-    'currentGuard' => config('auth.defaults.guard'),
-];
 
 $shouldShowBanner = $isImpersonating;
 
@@ -135,6 +128,3 @@ if ($shouldShowBanner) {
     <a href="{{ route('filament-impersonate.leave') }}">Leave impersonation</a>
 </div>
 @endif
-
-{{-- Debug info (visible in HTML source) --}}
-<!-- Impersonation Debug: {{ json_encode($debugInfo) }} -->
