@@ -2,31 +2,31 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Plugins\CustomLayupPlugin;
 use App\Filament\Widgets\DepartmentPortalWidget;
 use App\Http\Middleware\EnsureProfileCompleted;
+use Awcodes\Curator\CuratorPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
+use Filament\Notifications\Livewire\Notifications;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
-use Filament\Notifications\Livewire\Notifications;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Plugins\CustomLayupPlugin;
-use Awcodes\Curator\CuratorPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -89,6 +89,15 @@ class AdminPanelProvider extends PanelProvider
                     ->openUrlInNewTab(),
             ])
             ->renderHook(
+                PanelsRenderHook::BODY_START,
+                function (): string {
+                    // Inject our custom impersonation banner that works for all users
+                    $banner = view('components.impersonate-banner')->render();
+
+                    return $banner;
+                }
+            )
+            ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 function (): string {
                     if (! auth()->check()) {
@@ -100,6 +109,9 @@ class AdminPanelProvider extends PanelProvider
                     $teamName = $user->team ? $user->team->name : 'Department';
 
                     return '<style>
+                        /* Hide original impersonate banner to use our custom one */
+                        [id="impersonate-banner"]:not(.custom-banner) { display: none !important; }
+
                         .fi-topbar { display: none !important; }
                         .fi-layout { margin-top: 60px !important; }
                         .fi-main { padding-top: 0 !important; }

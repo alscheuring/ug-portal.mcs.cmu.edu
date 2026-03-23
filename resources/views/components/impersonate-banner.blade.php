@@ -65,7 +65,7 @@ if ($shouldShowBanner) {
         margin-{{ $position }}: var(--impersonate-banner-height);
     }
 
-    #impersonate-banner {
+    #impersonate-banner.custom-banner {
         position: {{ $fixed ? 'fixed' : 'absolute' }};
         height: var(--impersonate-banner-height);
         {{ $position }}: 0;
@@ -83,14 +83,14 @@ if ($shouldShowBanner) {
     }
 
     @if($style === 'auto')
-        .dark #impersonate-banner {
+        .dark #impersonate-banner.custom-banner {
             background-color: var(--impersonate-dark-bg-color);
             color: var(--impersonate-dark-text-color);
             border-{{ $borderPosition }}: 1px solid var(--impersonate-dark-border-color);
         }
     @endif
 
-    #impersonate-banner a {
+    #impersonate-banner.custom-banner a {
         display: block;
         padding: 6px 16px;
         border-radius: 4px;
@@ -102,18 +102,18 @@ if ($shouldShowBanner) {
     }
 
     @if($style === 'auto')
-        .dark #impersonate-banner a {
+        .dark #impersonate-banner.custom-banner a {
             background-color: rgba(var(--impersonate-dark-button-bg-color), 0.8);
             color: var(--impersonate-dark-button-text-color);
         }
     @endif
 
-    #impersonate-banner a:hover {
+    #impersonate-banner.custom-banner a:hover {
         background-color: rgba(var(--impersonate-{{ $default }}-button-bg-color), 1);
     }
 
     @if($style === 'auto')
-        .dark #impersonate-banner a:hover {
+        .dark #impersonate-banner.custom-banner a:hover {
             background-color: rgba(var(--impersonate-dark-button-bg-color), 1);
         }
     @endif
@@ -122,13 +122,13 @@ if ($shouldShowBanner) {
         body {
             margin-top: 0;
         }
-        #impersonate-banner {
+        #impersonate-banner.custom-banner {
             display: none;
         }
     }
 </style>
 
-<div id="impersonate-banner">
+<div id="impersonate-banner" class="custom-banner">
     <div>
         Impersonating <strong>{{ $display }}</strong>
     </div>
