@@ -388,5 +388,8 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Impersonation Banner -->
+    <x-impersonate::banner/>
 </body>
 </html>
