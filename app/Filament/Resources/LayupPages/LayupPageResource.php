@@ -74,35 +74,16 @@ class LayupPageResource extends PageResource
                             ->label('Sidebar')
                             ->required()
                             ->options(function (callable $get) {
-                                $teamId = $get('../../../team_id') ?? auth()->user()?->current_team_id;
+                                // Use a more direct approach to get team_id
+                                $record = $this->getRecord();
+                                $teamId = $record?->team_id ?? auth()->user()?->current_team_id;
 
                                 if (! $teamId) {
                                     return [];
                                 }
 
-                                // Get currently selected sidebar IDs to exclude them from other dropdowns
-                                $allFormData = $get('../../../');
-                                $selectedSidebarIds = collect($allFormData['sidebar_assignments'] ?? [])
-                                    ->pluck('sidebar_id')
-                                    ->filter()
-                                    ->toArray();
-
-                                // Get current item's sidebar ID so it can still be selected
-                                $currentSidebarId = $get('sidebar_id');
-
                                 return Sidebar::where('team_id', $teamId)
                                     ->where('is_active', true)
-                                    ->when(
-                                        ! empty($selectedSidebarIds) && $currentSidebarId,
-                                        fn ($query) => $query->where(function ($q) use ($selectedSidebarIds, $currentSidebarId) {
-                                            $q->whereNotIn('id', $selectedSidebarIds)
-                                                ->orWhere('id', $currentSidebarId);
-                                        }),
-                                        fn ($query) => $query->when(
-                                            ! empty($selectedSidebarIds),
-                                            fn ($q) => $q->whereNotIn('id', $selectedSidebarIds)
-                                        )
-                                    )
                                     ->orderBy('title')
                                     ->get()
                                     ->mapWithKeys(function ($sidebar) {
@@ -111,10 +92,7 @@ class LayupPageResource extends PageResource
                                     ->toArray();
                             })
                             ->searchable()
-                            ->live()
-                            ->afterStateUpdated(function ($state, $set, $get) {
-                                // This will trigger the options to refresh for other dropdowns
-                            }),
+                            ->live(),
                     ])
                     ->defaultItems(0)
                     ->addActionLabel('Add Sidebar')
@@ -133,7 +111,11 @@ class LayupPageResource extends PageResource
                     ->visible(function (callable $get) {
                         $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
-                        return $teamId !== null;
+                        if (! $teamId) {
+                            return false;
+                        }
+
+                        return Sidebar::where('team_id', $teamId)->where('is_active', true)->exists();
                     }),
             ])
             ->collapsible()
