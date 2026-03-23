@@ -210,13 +210,6 @@ class AdminPanelProvider extends PanelProvider
                             min-height: 300px;
                         }
 
-                        .filament-fabricator-page-builder {
-                            border: 1px solid rgb(209 213 219);
-                            border-radius: 0.375rem;
-                            padding: 1rem;
-                            background: rgb(249 250 251);
-                        }
-
                         /* Rich editor improvements */
                         .fi-fo-rich-editor .ProseMirror {
                             min-height: 150px;
