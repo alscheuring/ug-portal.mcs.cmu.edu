@@ -7,7 +7,7 @@ use App\Filament\Resources\LayupPages\Pages\EditLayupPage;
 use App\Filament\Resources\LayupPages\Pages\ListLayupPages;
 use App\Models\Sidebar;
 use Crumbls\Layup\Resources\PageResource;
-use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -65,45 +65,71 @@ class LayupPageResource extends PageResource
 
         // Add sidebars section
         $components[] = Section::make('Sidebars')
-            ->description('Assign sidebars to display alongside this page content')
+            ->description('Select sidebars to display alongside this page content. Use the dropdown to add sidebars - the order you add them determines their display order.')
             ->schema([
-                CheckboxList::make('sidebars')
-                    ->label('Available Sidebars')
-                    ->relationship('sidebars', 'title')
-                    ->getOptionLabelFromRecordUsing(function (Sidebar $record): string {
-                        return "{$record->title} ({$record->name})";
-                    })
-                    ->options(function (callable $get) {
-                        $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
+                Repeater::make('sidebar_assignments')
+                    ->label('Page Sidebars')
+                    ->schema([
+                        Select::make('sidebar_id')
+                            ->label('Sidebar')
+                            ->required()
+                            ->options(function (callable $get) {
+                                $teamId = $get('../../../team_id') ?? auth()->user()?->current_team_id;
 
-                        if (! $teamId) {
-                            return [];
-                        }
+                                if (! $teamId) {
+                                    return [];
+                                }
 
-                        return Sidebar::where('team_id', $teamId)
-                            ->where('is_active', true)
-                            ->orderBy('name')
-                            ->pluck('title', 'id')
-                            ->toArray();
-                    })
-                    ->descriptions(function (callable $get) {
-                        $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
+                                // Get currently selected sidebar IDs to exclude them from other dropdowns
+                                $allFormData = $get('../../../');
+                                $selectedSidebarIds = collect($allFormData['sidebar_assignments'] ?? [])
+                                    ->pluck('sidebar_id')
+                                    ->filter()
+                                    ->toArray();
 
-                        if (! $teamId) {
-                            return [];
-                        }
+                                // Get current item's sidebar ID so it can still be selected
+                                $currentSidebarId = $get('sidebar_id');
 
-                        return Sidebar::where('team_id', $teamId)
-                            ->where('is_active', true)
-                            ->orderBy('name')
-                            ->pluck('name', 'id')
-                            ->mapWithKeys(function ($name, $id) {
-                                return [$id => "Internal name: {$name}"];
+                                return Sidebar::where('team_id', $teamId)
+                                    ->where('is_active', true)
+                                    ->when(
+                                        ! empty($selectedSidebarIds) && $currentSidebarId,
+                                        fn ($query) => $query->where(function ($q) use ($selectedSidebarIds, $currentSidebarId) {
+                                            $q->whereNotIn('id', $selectedSidebarIds)
+                                                ->orWhere('id', $currentSidebarId);
+                                        }),
+                                        fn ($query) => $query->when(
+                                            ! empty($selectedSidebarIds),
+                                            fn ($q) => $q->whereNotIn('id', $selectedSidebarIds)
+                                        )
+                                    )
+                                    ->orderBy('title')
+                                    ->get()
+                                    ->mapWithKeys(function ($sidebar) {
+                                        return [$sidebar->id => "{$sidebar->title} ({$sidebar->name})"];
+                                    })
+                                    ->toArray();
                             })
-                            ->toArray();
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function ($state, $set, $get) {
+                                // This will trigger the options to refresh for other dropdowns
+                            }),
+                    ])
+                    ->defaultItems(0)
+                    ->addActionLabel('Add Sidebar')
+                    ->reorderable()
+                    ->collapsible()
+                    ->itemLabel(function (array $state): string {
+                        if (! isset($state['sidebar_id'])) {
+                            return 'Select a sidebar';
+                        }
+
+                        $sidebar = Sidebar::find($state['sidebar_id']);
+
+                        return $sidebar ? $sidebar->title : 'Unknown sidebar';
                     })
-                    ->columns(2)
-                    ->helperText('Select which sidebars should be displayed on this page. Only active sidebars from the same team are shown.')
+                    ->helperText('Add sidebars in the order you want them to appear on the page. You can drag and drop to reorder them.')
                     ->visible(function (callable $get) {
                         $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 

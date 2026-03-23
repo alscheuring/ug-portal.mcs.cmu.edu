@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\LayupPages\Pages;
 
 use App\Filament\Resources\LayupPages\LayupPageResource;
+use App\Models\Sidebar;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -12,6 +13,8 @@ use Filament\Resources\Pages\EditRecord;
 class EditLayupPage extends EditRecord
 {
     protected static string $resource = LayupPageResource::class;
+
+    protected $sidebarAssignments = [];
 
     protected function getHeaderActions(): array
     {
@@ -64,5 +67,54 @@ class EditLayupPage extends EditRecord
             RestoreAction::make()
                 ->visible(fn () => ! $this->record->isDepartmentHome()),
         ];
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Load the sidebar assignments for the repeater
+        $sidebarAssignments = $this->record->sidebars()
+            ->orderBy('layup_page_sidebar.sort_order')
+            ->get()
+            ->map(function ($sidebar) {
+                return [
+                    'sidebar_id' => $sidebar->id,
+                ];
+            })
+            ->toArray();
+
+        $data['sidebar_assignments'] = $sidebarAssignments;
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Handle sidebar assignments separately
+        $sidebarAssignments = $data['sidebar_assignments'] ?? [];
+        unset($data['sidebar_assignments']);
+
+        // We'll handle the sidebar sync after the main record is saved
+        $this->sidebarAssignments = $sidebarAssignments;
+
+        return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        // Sync the sidebars with proper sort order
+        if (isset($this->sidebarAssignments)) {
+            $syncData = [];
+            foreach ($this->sidebarAssignments as $index => $assignment) {
+                if (isset($assignment['sidebar_id'])) {
+                    $syncData[$assignment['sidebar_id']] = [
+                        'sort_order' => $index,
+                    ];
+                }
+            }
+
+            $this->record->sidebars()->sync($syncData);
+        }
+
+        parent::afterSave();
     }
 }
