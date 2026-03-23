@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +14,7 @@ use Illuminate\Support\Str;
 use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Impersonate, Notifiable;
@@ -159,5 +161,29 @@ class User extends Authenticatable
 
         // TeamAdmins and Students can be impersonated
         return $this->isTeamAdmin() || $this->isStudent();
+    }
+
+    /**
+     * Determine if the user can access the specified Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Allow access in local environment for development
+        if (app()->isLocal()) {
+            return true;
+        }
+
+        // Admin panel access - only SuperAdmins and TeamAdmins
+        if ($panel->getId() === 'admin') {
+            return $this->isSuperAdmin() || $this->isTeamAdmin();
+        }
+
+        // Student panel access - only Students
+        if ($panel->getId() === 'student') {
+            return $this->isStudent();
+        }
+
+        // Deny access to any other panels by default
+        return false;
     }
 }
