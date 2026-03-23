@@ -114,7 +114,5 @@ class EditLayupPage extends EditRecord
 
             $this->record->sidebars()->sync($syncData);
         }
-
-        parent::afterSave();
     }
 }
