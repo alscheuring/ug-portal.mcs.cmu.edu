@@ -132,7 +132,7 @@ class AdminPanelProvider extends PanelProvider
                             background: white;
                             border-bottom: 1px solid #e5e7eb;
                             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-                            height: 60px;
+                            height: 70px;
                         }
                         .cmu-header-content {
                             max-width: 80rem;
