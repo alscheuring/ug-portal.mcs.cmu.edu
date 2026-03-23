@@ -8,7 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Guava\FilamentIconPicker\Extensions\IconPickerExtension;
+use Guava\IconPicker\Forms\Components\IconPicker;
 
 class SidebarForm
 {
@@ -32,9 +32,14 @@ class SidebarForm
                             ->maxLength(255)
                             ->helperText('Title displayed at the top of the sidebar box'),
 
+                        IconPicker::make('icon')
+                            ->label('Sidebar Icon (Optional)')
+                            ->sets(['heroicons'])
+                            ->helperText('Optional icon to display in the sidebar title'),
+
                         RichEditor::make('content')
                             ->required()
-                            ->helperText('Content displayed in the sidebar box. You can include links, formatting, HTML, and icons.')
+                            ->helperText('Content displayed in the sidebar box. You can include links, formatting, and HTML.')
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -46,10 +51,6 @@ class SidebarForm
                                 'h3',
                                 'blockquote',
                                 'codeBlock',
-                            ])
-                            ->extensions([
-                                IconPickerExtension::make()
-                                    ->sets(['heroicons']), // Use Heroicons icon set
                             ]),
 
                         Toggle::make('is_active')

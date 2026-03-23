@@ -6,6 +6,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source '../../vendor/guava/filament-icon-picker/resources/**/*';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -65,3 +66,34 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Remove sidebar card hover effects */
+.eureka-card {
+    transition: none !important;
+    transform: none !important;
+}
+
+.eureka-card:hover {
+    transform: none !important;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+/* Sidebar link styles with hover animation */
+.eureka-card .prose a {
+    @apply inline-flex items-center gap-1 transition-all duration-200 ease-in-out;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.eureka-card .prose a:hover {
+    @apply bg-gray-100 transform scale-105;
+}
+
+.eureka-card .prose a::after {
+    content: '→';
+    @apply text-gray-400 text-sm ml-1 transition-colors duration-200;
+}
+
+.eureka-card .prose a:hover::after {
+    @apply text-gray-600;
+}

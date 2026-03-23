@@ -17,6 +17,7 @@ class Sidebar extends Model
         'team_id',
         'name',
         'title',
+        'icon',
         'content',
         'is_active',
         'sort_order',

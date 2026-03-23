@@ -82,7 +82,12 @@
                         {{-- Dynamic Sidebars --}}
                         @foreach($page->sidebars as $sidebar)
                             <div class="eureka-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $sidebar->title }}</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                    @if($sidebar->icon)
+                                        <x-icon :name="$sidebar->icon" class="w-5 h-5" />
+                                    @endif
+                                    {{ $sidebar->title }}
+                                </h3>
                                 <div class="prose prose-sm max-w-none text-gray-600">
                                     {!! $sidebar->content !!}
                                 </div>
