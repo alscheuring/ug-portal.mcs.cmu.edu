@@ -38,15 +38,11 @@ class GoogleOAuthController extends Controller
                     ->with('error', 'Only CMU Andrew accounts are allowed.');
             }
 
-            // Extract andrew_id from email
-            $andrewId = str_replace('@andrew.cmu.edu', '', $googleUser->getEmail());
-
             // Find or create user
             $user = User::updateOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
                     'name' => $googleUser->getName(),
-                    'andrew_id' => $andrewId,
                     'email_verified_at' => now(),
                     'profile_photo_path' => $googleUser->getAvatar(),
                     // Don't set department yet - let user select during profile completion
@@ -95,7 +91,7 @@ class GoogleOAuthController extends Controller
             return redirect('/')->with('error', 'ANDREW_TEST_USER must be a valid @andrew.cmu.edu email address.');
         }
 
-        // Extract andrew_id from email
+        // Extract andrew_id from email for display name
         $andrewId = str_replace('@andrew.cmu.edu', '', $testEmail);
 
         // Find or create test user (similar to OAuth callback)
@@ -103,7 +99,6 @@ class GoogleOAuthController extends Controller
             ['email' => $testEmail],
             [
                 'name' => 'Test User ('.$andrewId.')',
-                'andrew_id' => $andrewId,
                 'email_verified_at' => now(),
                 'profile_photo_path' => null,
             ]

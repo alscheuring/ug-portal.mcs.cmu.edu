@@ -26,7 +26,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'andrew_id',
         'department',
         'year_in_program',
         'profile_completed_at',
@@ -61,6 +60,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's Andrew ID (derived from email).
+     */
+    public function getAndrewIdAttribute(): string
+    {
+        return str_replace('@andrew.cmu.edu', '', $this->email ?? '');
+    }
+
+    /**
      * Get the user's initials
      */
     public function initials(): string
@@ -87,8 +94,7 @@ class User extends Authenticatable
     {
         return ! is_null($this->profile_completed_at) &&
                ! is_null($this->department) &&
-               ! is_null($this->year_in_program) &&
-               ! is_null($this->andrew_id);
+               ! is_null($this->year_in_program);
     }
 
     /**

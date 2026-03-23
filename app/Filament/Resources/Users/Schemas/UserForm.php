@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\Team;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Spatie\Permission\Models\Role;
 
@@ -27,10 +27,6 @@ class UserForm
                             ->required()
                             ->maxLength(255),
 
-                        TextInput::make('andrew_id')
-                            ->label('Andrew ID')
-                            ->unique(ignoreRecord: true)
-                            ->maxLength(255),
                     ])
                     ->columns(2),
 
@@ -72,7 +68,7 @@ class UserForm
                         Select::make('roles')
                             ->relationship('roles', 'name')
                             ->multiple()
-                            ->options(Role::pluck('name', 'name')),
+                            ->options(Role::pluck('name', 'id')),
                     ])
                     ->columns(2),
             ]);
