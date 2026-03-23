@@ -8,6 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Guava\FilamentIconPicker\Extensions\IconPickerExtension;
 
 class SidebarForm
 {
@@ -33,7 +34,7 @@ class SidebarForm
 
                         RichEditor::make('content')
                             ->required()
-                            ->helperText('Content displayed in the sidebar box. You can include links, formatting, and HTML.')
+                            ->helperText('Content displayed in the sidebar box. You can include links, formatting, HTML, and icons.')
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -45,6 +46,10 @@ class SidebarForm
                                 'h3',
                                 'blockquote',
                                 'codeBlock',
+                            ])
+                            ->extensions([
+                                IconPickerExtension::make()
+                                    ->sets(['heroicons']), // Use Heroicons icon set
                             ]),
 
                         Toggle::make('is_active')
