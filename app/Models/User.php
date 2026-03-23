@@ -149,8 +149,24 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
 
-        // TeamAdmins and Students can be impersonated
-        return $this->isTeamAdmin() || $this->isStudent();
+        // Get the current impersonator (the user trying to impersonate)
+        $impersonator = auth()->user();
+
+        if (! $impersonator) {
+            return false;
+        }
+
+        // Students can be impersonated by both SuperAdmins and TeamAdmins
+        if ($this->isStudent()) {
+            return $impersonator->isSuperAdmin() || $impersonator->isTeamAdmin();
+        }
+
+        // TeamAdmins can only be impersonated by SuperAdmins
+        if ($this->isTeamAdmin()) {
+            return $impersonator->isSuperAdmin();
+        }
+
+        return false;
     }
 
     /**
