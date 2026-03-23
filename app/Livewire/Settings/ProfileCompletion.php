@@ -97,15 +97,9 @@ class ProfileCompletion extends Component
     {
         if ($user->isSuperAdmin() || $user->isTeamAdmin()) {
             $this->redirect('/admin');
-        } elseif ($user->isStudent()) {
-            // Redirect to team portal if available, otherwise student panel
-            if ($user->team) {
-                $this->redirect('/'.$user->team->slug);
-            } else {
-                $this->redirect('/student');
-            }
         } else {
-            $this->redirect('/student');
+            // Use centralized redirect logic
+            $this->redirect($user->getRedirectUrl());
         }
     }
 

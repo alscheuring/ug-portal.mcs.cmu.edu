@@ -133,8 +133,8 @@
                                 Admin Panel
                             </a>
                         @endif
-                        <a href="/student" class="px-6 py-3 bg-red-700 text-white rounded-md font-medium hover:bg-red-800 transition-colors">
-                            Student Portal
+                        <a href="{{ auth()->user()->getRedirectUrl() }}" class="px-6 py-3 bg-red-700 text-white rounded-md font-medium hover:bg-red-800 transition-colors">
+                            {{ auth()->user()->isStudent() && auth()->user()->roles->count() === 1 && auth()->user()->team ? auth()->user()->team->name . ' Portal' : 'Student Portal' }}
                         </a>
                     </div>
                 </div>

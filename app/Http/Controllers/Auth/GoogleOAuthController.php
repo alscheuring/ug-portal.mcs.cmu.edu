@@ -157,17 +157,7 @@ class GoogleOAuthController extends Controller
                 ->with('info', $message);
         }
 
-        // Redirect based on role
-        if ($user->isSuperAdmin() || $user->isTeamAdmin()) {
-            return redirect('/admin');
-        }
-
-        // Students and default redirect
-        if ($user->isStudent()) {
-            return redirect('/student');
-        }
-
-        // Fallback to student panel
-        return redirect('/student');
+        // Redirect based on role using centralized logic
+        return redirect($user->getRedirectUrl());
     }
 }

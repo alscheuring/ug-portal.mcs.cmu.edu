@@ -170,6 +170,27 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the appropriate redirect URL for this user based on their roles.
+     */
+    public function getRedirectUrl(): string
+    {
+        // SuperAdmins and TeamAdmins go to admin panel
+        if ($this->isSuperAdmin() || $this->isTeamAdmin()) {
+            return '/admin';
+        }
+
+        // Students with ONLY Student role go to their team page
+        if ($this->isStudent() && $this->roles->count() === 1) {
+            if ($this->team) {
+                return '/'.$this->team->slug;
+            }
+        }
+
+        // Fallback to student panel
+        return '/student';
+    }
+
+    /**
      * Determine if the user can access the specified Filament panel.
      */
     public function canAccessPanel(Panel $panel): bool

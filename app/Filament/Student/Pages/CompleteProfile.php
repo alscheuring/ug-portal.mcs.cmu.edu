@@ -30,7 +30,7 @@ class CompleteProfile extends Page
     {
         // Redirect if profile is already complete
         if (auth()->user()?->hasCompletedProfile()) {
-            $this->redirect('/student');
+            $this->redirect(auth()->user()->getRedirectUrl());
         }
     }
 }
