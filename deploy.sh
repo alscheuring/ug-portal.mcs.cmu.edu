@@ -7,7 +7,7 @@
 # This script handles the complete deployment process for the production
 # Laravel application including code updates, optimization, and maintenance.
 #
-# Usage: ./deploy.sh
+# Usage: ./deploy.sh [--skip-backup]
 #
 # Make sure to run this script from the application root directory
 # =============================================================================
