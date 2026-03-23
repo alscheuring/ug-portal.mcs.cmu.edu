@@ -104,7 +104,6 @@ class LayupPageResource extends PageResource
                     })
                     ->columns(2)
                     ->helperText('Select which sidebars should be displayed on this page. Only active sidebars from the same team are shown.')
-                    ->placeholder('No sidebars available for this team')
                     ->visible(function (callable $get) {
                         $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 

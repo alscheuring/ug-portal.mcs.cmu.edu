@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\LayupPage;
 use App\Models\Menu;
 use App\Models\Team;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class LayupPageController extends Controller
@@ -36,6 +35,7 @@ class LayupPageController extends Controller
             ->forTeam($team)
             ->published()
             ->where('slug', $slug)
+            ->with('sidebars')
             ->firstOrFail();
 
         // Get navigation from Menu Manager

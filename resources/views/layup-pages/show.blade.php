@@ -50,27 +50,98 @@
 
         {{-- Page Content --}}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {{-- Render Layup Content --}}
-            @if($page->content && is_array($page->content))
-                @php
-                    // Only use the top-level rows (ignore default hero section)
-                    $content = $page->content;
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {{-- Main Content --}}
+                <div class="lg:col-span-3">
+                    {{-- Render Layup Content --}}
+                    @if($page->content && is_array($page->content))
+                        @php
+                            // Only use the top-level rows (ignore default hero section)
+                            $content = $page->content;
 
-                    // If we have top-level rows, use only those
-                    if (isset($content['rows']) && is_array($content['rows']) && !empty($content['rows'])) {
-                        $content = ['sections' => [['rows' => $content['rows']]]];
-                    }
-                    // Otherwise, fall back to existing sections if no top-level rows
-                    elseif (isset($content['sections'])) {
-                        $content = ['sections' => $content['sections']];
-                    }
-                @endphp
-                @layup($content)
-            @else
-                <div class="prose max-w-none">
-                    <p class="text-gray-600">This page has no content yet.</p>
+                            // If we have top-level rows, use only those
+                            if (isset($content['rows']) && is_array($content['rows']) && !empty($content['rows'])) {
+                                $content = ['sections' => [['rows' => $content['rows']]]];
+                            }
+                            // Otherwise, fall back to existing sections if no top-level rows
+                            elseif (isset($content['sections'])) {
+                                $content = ['sections' => $content['sections']];
+                            }
+                        @endphp
+                        @layup($content)
+                    @else
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600">This page has no content yet.</p>
+                        </div>
+                    @endif
                 </div>
-            @endif
+
+                {{-- Sidebar --}}
+                <div class="space-y-6">
+                    {{-- Dynamic Sidebars --}}
+                    @forelse($page->sidebars as $sidebar)
+                        <div class="eureka-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $sidebar->title }}</h3>
+                            <div class="prose prose-sm max-w-none text-gray-600">
+                                {!! $sidebar->content !!}
+                            </div>
+                        </div>
+                    @empty
+                        {{-- Fallback: Default sidebars when no sidebars are assigned to this page --}}
+                        <div class="eureka-card bg-gray-50 rounded-lg border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $team->quick_links_title ?: 'Quick Links' }}</h3>
+
+                            @if($team->quick_links_content)
+                                <div class="prose prose-sm max-w-none text-gray-600">
+                                    {!! $team->quick_links_content !!}
+                                </div>
+                            @else
+                                <ul class="space-y-2 text-sm">
+                                    <li>
+                                        <a href="{{ route('public.team.index', $team->slug) }}"
+                                           class="text-blue-600 hover:text-blue-800">
+                                            {{ $team->name }} Home
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('public.team.announcements.index', $team->slug) }}"
+                                           class="text-blue-600 hover:text-blue-800">
+                                            Latest News
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('public.team.polls.index', $team->slug) }}"
+                                           class="text-blue-600 hover:text-blue-800">
+                                            Current Polls
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
+                        </div>
+
+                        {{-- Help/Contact --}}
+                        @if($team->help_box_content || $team->manager_email)
+                            <div class="eureka-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $team->help_box_title ?: 'Need Help?' }}</h3>
+
+                                @if($team->help_box_content)
+                                    <div class="prose prose-sm max-w-none text-gray-600">
+                                        {!! $team->help_box_content !!}
+                                    </div>
+                                @elseif($team->manager_email)
+                                    <p class="text-sm text-gray-600 mb-3">
+                                        Have questions about this page or our department?
+                                    </p>
+                                    <a href="mailto:{{ $team->manager_email }}"
+                                       class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                        Contact Us →
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
+                    @endforelse
+                </div>
+            </div>
         </div>
 
         {{-- Page Meta Information --}}
