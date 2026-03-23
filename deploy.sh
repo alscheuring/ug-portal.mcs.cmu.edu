@@ -429,6 +429,9 @@ main() {
     # Pre-deployment checks
     check_requirements
 
+    # Set proper file permissions FIRST (needed for maintenance mode)
+    set_file_permissions
+
     # Create database backup
     backup_database
 
@@ -450,9 +453,6 @@ main() {
 
     # Optimize for production
     optimize_application
-
-    # Set proper file permissions
-    set_file_permissions
 
     # Restart services
     restart_services
