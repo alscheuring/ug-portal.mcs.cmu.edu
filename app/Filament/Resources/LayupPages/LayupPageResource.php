@@ -74,9 +74,8 @@ class LayupPageResource extends PageResource
                             ->label('Sidebar')
                             ->required()
                             ->options(function (callable $get) {
-                                // Use a more direct approach to get team_id
-                                $record = $this->getRecord();
-                                $teamId = $record?->team_id ?? auth()->user()?->current_team_id;
+                                // Get team_id from form data or fallback to current user's team
+                                $teamId = $get('../../team_id') ?? auth()->user()?->current_team_id;
 
                                 if (! $teamId) {
                                     return [];
@@ -111,18 +110,14 @@ class LayupPageResource extends PageResource
                     ->visible(function (callable $get) {
                         $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
-                        if (! $teamId) {
-                            return false;
-                        }
-
-                        return Sidebar::where('team_id', $teamId)->where('is_active', true)->exists();
+                        return $teamId !== null;
                     }),
             ])
             ->collapsible()
             ->visible(function (callable $get) {
                 $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
-                return $teamId && Sidebar::where('team_id', $teamId)->where('is_active', true)->exists();
+                return $teamId !== null;
             });
 
         // Update schema with new components
