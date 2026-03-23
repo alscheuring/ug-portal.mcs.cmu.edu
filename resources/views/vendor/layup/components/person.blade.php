@@ -9,7 +9,7 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ $data['role'] }}</p>
     @endif
     @if(!empty($data['bio']))
-        <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">{{ $data['bio'] }}</p>
+        <div class="text-gray-600 dark:text-gray-300 text-sm mb-3 prose prose-sm max-w-none">{!! $data['bio'] !!}</div>
     @endif
     @php $socials = array_filter([$data['email'] ?? '', $data['website'] ?? '', $data['twitter'] ?? '', $data['linkedin'] ?? '', $data['facebook'] ?? '']); @endphp
     @if(count($socials))
