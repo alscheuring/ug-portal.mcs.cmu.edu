@@ -302,55 +302,6 @@ restart_services() {
     log_success "Service restart completed (check warnings above for any manual steps needed)"
 }
 
-set_file_permissions() {
-    log_info "Setting proper file permissions..."
-
-    # Set general file and directory permissions (exclude .git and other system directories)
-    find . -type f -not -path "./.git/*" -not -name ".env" -exec chmod 644 {} \; 2>/dev/null || true
-    find . -type d -not -path "./.git/*" -exec chmod 755 {} \; 2>/dev/null || true
-
-    # Make artisan executable
-    chmod +x artisan 2>/dev/null || true
-
-    # Set storage and bootstrap/cache permissions
-    if [ -d "storage" ]; then
-        chmod -R 775 storage
-        log_success "Storage directory permissions set to 775"
-    fi
-
-    if [ -d "bootstrap/cache" ]; then
-        chmod -R 775 bootstrap/cache
-        log_success "Bootstrap cache directory permissions set to 775"
-    fi
-
-    # Try to set web server ownership (if we have sudo access)
-    if command -v systemctl &> /dev/null; then
-        # Try to detect web server user
-        WEB_USER=""
-        if id www-data &>/dev/null; then
-            WEB_USER="www-data"
-        elif id nginx &>/dev/null; then
-            WEB_USER="nginx"
-        elif id apache &>/dev/null; then
-            WEB_USER="apache"
-        fi
-
-        if [ -n "$WEB_USER" ]; then
-            log_info "Attempting to set web server ownership ($WEB_USER)..."
-            if sudo -n chown -R "$WEB_USER:$WEB_USER" storage bootstrap/cache 2>/dev/null; then
-                log_success "Web server ownership set successfully"
-            else
-                log_warning "Could not set web server ownership (permission issue)"
-                log_info "Manual command: sudo chown -R $WEB_USER:$WEB_USER storage bootstrap/cache"
-            fi
-        else
-            log_warning "Could not detect web server user (www-data, nginx, or apache)"
-            log_info "You may need to manually set ownership of storage/ and bootstrap/cache/"
-        fi
-    fi
-
-    log_success "File permissions configured"
-}
 
 verify_deployment() {
     log_info "Verifying deployment..."
@@ -428,9 +379,6 @@ main() {
 
     # Pre-deployment checks
     check_requirements
-
-    # Set proper file permissions FIRST (needed for maintenance mode)
-    set_file_permissions
 
     # Create database backup
     backup_database
