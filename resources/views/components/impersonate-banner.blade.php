@@ -70,7 +70,7 @@ if ($shouldShowBanner) {
         background-color: var(--impersonate-{{ $default }}-bg-color);
         color: var(--impersonate-{{ $default }}-text-color);
         border-{{ $borderPosition }}: 1px solid var(--impersonate-{{ $default }}-border-color);
-        z-index: 9999;
+        z-index: 70;
         font-family: system-ui, sans-serif;
         font-size: 14px;
     }

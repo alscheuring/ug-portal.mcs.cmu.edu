@@ -27,6 +27,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use STS\FilamentImpersonate\Facades\Impersonation;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -108,17 +109,23 @@ class AdminPanelProvider extends PanelProvider
                     $teamLink = $user->team ? route('public.team.index', $user->team->slug) : '#';
                     $teamName = $user->team ? $user->team->name : 'Department';
 
+                    // Check if impersonating to adjust header positioning
+                    $isImpersonating = Impersonation::isImpersonating();
+                    $headerTop = $isImpersonating ? '50px' : '0';
+                    $layoutMarginTop = $isImpersonating ? '110px' : '60px';
+                    $sidebarMarginTop = $isImpersonating ? '70px' : '20px';
+
                     return '<style>
                         /* Hide original impersonate banner to use our custom one */
                         [id="impersonate-banner"]:not(.custom-banner) { display: none !important; }
 
                         .fi-topbar { display: none !important; }
-                        .fi-layout { margin-top: 60px !important; }
+                        .fi-layout { margin-top: '.$layoutMarginTop.' !important; }
                         .fi-main { padding-top: 0 !important; }
-                        .fi-sidebar { margin-top: 60px !important; }
+                        .fi-sidebar { margin-top: '.$sidebarMarginTop.' !important; }
                         .cmu-header {
                             position: fixed;
-                            top: 0;
+                            top: '.$headerTop.';
                             left: 0;
                             right: 0;
                             z-index: 60;
