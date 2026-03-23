@@ -27,10 +27,11 @@ class LayupPageResource extends PageResource
     {
         $schema = parent::form($schema);
 
-        // Add team and author fields to the page details section
+        // Get existing components
         $components = $schema->getComponents();
 
-        // Find the page details section and add our fields
+        // Try to add team field to page details section if it exists
+        $teamFieldAdded = false;
         foreach ($components as $component) {
             if ($component instanceof Section && $component->getLabel() === __('layup::resource.page_details')) {
                 $existingSchema = $component->getSchema();
@@ -41,14 +42,39 @@ class LayupPageResource extends PageResource
                     ->default(auth()->user()->current_team_id ?? null)
                     ->visible(fn () => auth()->user()->isSuperAdmin());
 
-                $existingSchema[] = CheckboxList::make('sidebars')
-                    ->label('Sidebars')
+                $component->schema($existingSchema);
+                $teamFieldAdded = true;
+                break;
+            }
+        }
+
+        // If team field wasn't added, create a new section for it (SuperAdmin only)
+        if (! $teamFieldAdded && auth()->user()?->isSuperAdmin()) {
+            $components[] = Section::make('Page Settings')
+                ->description('Configure the page settings and team assignment')
+                ->schema([
+                    Select::make('team_id')
+                        ->label('Team')
+                        ->relationship('team', 'name')
+                        ->required()
+                        ->default(auth()->user()->current_team_id ?? null),
+                ])
+                ->collapsible()
+                ->collapsed();
+        }
+
+        // Add sidebars section
+        $components[] = Section::make('Sidebars')
+            ->description('Assign sidebars to display alongside this page content')
+            ->schema([
+                CheckboxList::make('sidebars')
+                    ->label('Available Sidebars')
                     ->relationship('sidebars', 'title')
                     ->getOptionLabelFromRecordUsing(function (Sidebar $record): string {
                         return "{$record->title} ({$record->name})";
                     })
                     ->options(function (callable $get) {
-                        $teamId = $get('team_id') ?? auth()->user()->current_team_id;
+                        $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
                         if (! $teamId) {
                             return [];
@@ -61,7 +87,7 @@ class LayupPageResource extends PageResource
                             ->toArray();
                     })
                     ->descriptions(function (callable $get) {
-                        $teamId = $get('team_id') ?? auth()->user()->current_team_id;
+                        $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
                         if (! $teamId) {
                             return [];
@@ -78,16 +104,22 @@ class LayupPageResource extends PageResource
                     })
                     ->columns(2)
                     ->helperText('Select which sidebars should be displayed on this page. Only active sidebars from the same team are shown.')
+                    ->placeholder('No sidebars available for this team')
                     ->visible(function (callable $get) {
-                        $teamId = $get('team_id') ?? auth()->user()->current_team_id;
+                        $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
-                        return $teamId && Sidebar::where('team_id', $teamId)->where('is_active', true)->exists();
-                    });
+                        return $teamId !== null;
+                    }),
+            ])
+            ->collapsible()
+            ->visible(function (callable $get) {
+                $teamId = $get('team_id') ?? auth()->user()?->current_team_id;
 
-                $component->schema($existingSchema);
-                break;
-            }
-        }
+                return $teamId && Sidebar::where('team_id', $teamId)->where('is_active', true)->exists();
+            });
+
+        // Update schema with new components
+        $schema->components($components);
 
         return $schema;
     }
