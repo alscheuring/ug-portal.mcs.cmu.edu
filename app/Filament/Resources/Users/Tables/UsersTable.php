@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +10,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UsersTable
 {
@@ -62,19 +62,7 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-
-                Action::make('impersonate')
-                    ->label('Impersonate')
-                    ->icon('heroicon-o-user-circle')
-                    ->color('warning')
-                    ->visible(function ($record) {
-                        return auth()->user()->canImpersonate($record) && $record->canBeImpersonated();
-                    })
-                    ->url(fn ($record) => route('impersonate.take', $record->id))
-                    ->openUrlInNewTab(false)
-                    ->requiresConfirmation()
-                    ->modalHeading('Impersonate User')
-                    ->modalDescription(fn ($record) => "Are you sure you want to impersonate {$record->name}?"),
+                Impersonate::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -11,13 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Lab404\Impersonate\Models\Impersonate;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Impersonate, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -132,21 +131,12 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Determine if the user can impersonate another user.
+     * Determine if the user can impersonate other users.
      */
-    public function canImpersonate($user): bool
+    public function canImpersonate(): bool
     {
-        // SuperAdmins can impersonate anyone
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-
-        // TeamAdmins can impersonate Students only
-        if ($this->isTeamAdmin() && $user->isStudent()) {
-            return true;
-        }
-
-        return false;
+        // SuperAdmins and TeamAdmins can impersonate users
+        return $this->isSuperAdmin() || $this->isTeamAdmin();
     }
 
     /**

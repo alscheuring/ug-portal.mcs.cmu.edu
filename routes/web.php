@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleOAuthController;
-use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\PublicPortalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -87,11 +86,6 @@ Route::get('/student/complete-profile', function () {
     return view('livewire.profile-completion-page');
 })->middleware(['auth'])->name('student.complete-profile');
 
-// Impersonation routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/impersonate/take/{id}', [ImpersonateController::class, 'take'])->name('impersonate.take');
-    Route::get('/impersonate/leave', [ImpersonateController::class, 'leave'])->name('impersonate.leave');
-});
 
 // Protected routes
 Route::middleware(['auth', 'verified'])->group(function () {
