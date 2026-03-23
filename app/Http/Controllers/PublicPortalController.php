@@ -11,6 +11,27 @@ use App\Models\Team;
 class PublicPortalController extends Controller
 {
     /**
+     * Display the team portal homepage or department home page if one exists.
+     */
+    public function indexOrPage(Team $team)
+    {
+        // Check if there's a department home page for this team
+        $departmentHomePage = LayupPage::where('team_id', $team->id)
+            ->where('slug', $team->slug)
+            ->where('is_department_home', true)
+            ->published()
+            ->first();
+
+        if ($departmentHomePage) {
+            // Serve the department home page
+            return $this->renderDepartmentHomePage($team, $departmentHomePage);
+        }
+
+        // Fall back to the original team portal index
+        return $this->index($team);
+    }
+
+    /**
      * Display the team portal homepage.
      */
     public function index(Team $team)
@@ -154,5 +175,16 @@ class PublicPortalController extends Controller
         $navigation = Menu::getTeamNavigation($team->id);
 
         return view('public.team.polls.show', compact('team', 'poll', 'userHasVoted', 'userVotes', 'otherPolls', 'navigation'));
+    }
+
+    /**
+     * Render a department home page using the LayupPage view.
+     */
+    private function renderDepartmentHomePage(Team $team, LayupPage $page)
+    {
+        // Get navigation from Menu Manager
+        $navigation = Menu::getTeamNavigation($team->id);
+
+        return view('layup-pages.show', compact('team', 'page', 'navigation'));
     }
 }

@@ -18,7 +18,11 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company(),
+            'slug' => $this->faker->slug(),
+            'description' => $this->faker->text(),
+            'manager_email' => $this->faker->email(),
+            'is_active' => true,
         ];
     }
 }

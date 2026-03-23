@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Team;
+use App\Observers\TeamObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Register model observers
+        Team::observe(TeamObserver::class);
     }
 
     /**
@@ -47,5 +52,4 @@ class AppServiceProvider extends ServiceProvider
             : null,
         );
     }
-
 }

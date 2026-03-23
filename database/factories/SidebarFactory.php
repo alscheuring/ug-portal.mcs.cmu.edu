@@ -18,7 +18,12 @@ class SidebarFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'team_id' => 1, // Will be overridden in tests
+            'name' => $this->faker->words(2, true),
+            'title' => $this->faker->sentence(3),
+            'content' => $this->faker->paragraphs(2, true),
+            'is_active' => true,
+            'sort_order' => 0,
         ];
     }
 }

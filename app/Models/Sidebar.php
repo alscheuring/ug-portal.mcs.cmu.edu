@@ -39,6 +39,6 @@ class Sidebar extends Model
         return $this->belongsToMany(LayupPage::class)
             ->withPivot(['sort_order'])
             ->withTimestamps()
-            ->orderBy('page_sidebar.sort_order');
+            ->orderBy('layup_page_sidebar.sort_order');
     }
 }

@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Crumbls\Layup\Models\Page as BasePage;
+use Database\Factories\LayupPageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class LayupPage extends BasePage
 {
+    /** @use HasFactory<LayupPageFactory> */
+    use HasFactory;
+
     protected $table = 'layup_pages';
 
     protected $fillable = [
@@ -18,6 +24,7 @@ class LayupPage extends BasePage
         'team_id',
         'author_id',
         'published_at',
+        'is_department_home',
     ];
 
     protected function casts(): array
@@ -25,6 +32,7 @@ class LayupPage extends BasePage
         return [
             ...parent::casts(),
             'published_at' => 'datetime',
+            'is_department_home' => 'boolean',
         ];
     }
 
@@ -44,6 +52,17 @@ class LayupPage extends BasePage
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    /**
+     * Get the sidebars associated with this page.
+     */
+    public function sidebars(): BelongsToMany
+    {
+        return $this->belongsToMany(Sidebar::class)
+            ->withPivot(['sort_order'])
+            ->withTimestamps()
+            ->orderBy('layup_page_sidebar.sort_order');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -61,6 +80,11 @@ class LayupPage extends BasePage
             ->whereNotNull('published_at');
     }
 
+    public function scopeDepartmentHome($query)
+    {
+        return $query->where('is_department_home', true);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helpers
@@ -70,6 +94,11 @@ class LayupPage extends BasePage
     public function isPublished(): bool
     {
         return $this->status === 'published' && $this->published_at !== null;
+    }
+
+    public function isDepartmentHome(): bool
+    {
+        return $this->is_department_home === true;
     }
 
     /**
@@ -100,5 +129,13 @@ class LayupPage extends BasePage
             'status' => 'draft',
             'published_at' => null,
         ]);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): LayupPageFactory
+    {
+        return LayupPageFactory::new();
     }
 }

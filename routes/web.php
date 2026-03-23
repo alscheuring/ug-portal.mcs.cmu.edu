@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleOAuthController;
+use App\Http\Controllers\LayupPageController;
 use App\Http\Controllers\PublicPortalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -86,7 +87,6 @@ Route::get('/student/complete-profile', function () {
     return view('livewire.profile-completion-page');
 })->middleware(['auth'])->name('student.complete-profile');
 
-
 // Protected routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
@@ -94,7 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Public team portal routes (must be last to avoid conflicts)
 Route::prefix('{team:slug}')->name('public.')->group(function () {
-    Route::get('/', [PublicPortalController::class, 'index'])->name('team.index');
+    Route::get('/', [PublicPortalController::class, 'indexOrPage'])->name('team.index');
     Route::get('/announcements', [PublicPortalController::class, 'announcements'])->name('team.announcements.index');
     Route::get('/announcements/{slug}', [PublicPortalController::class, 'announcement'])->name('team.announcements.show');
     Route::get('/polls', [PublicPortalController::class, 'polls'])->name('team.polls.index');
@@ -102,8 +102,8 @@ Route::prefix('{team:slug}')->name('public.')->group(function () {
 
     // Layup pages routes
     Route::prefix('pages')->name('pages.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\LayupPageController::class, 'index'])->name('index');
-        Route::get('/{slug}', [\App\Http\Controllers\LayupPageController::class, 'show'])->name('show');
+        Route::get('/', [LayupPageController::class, 'index'])->name('index');
+        Route::get('/{slug}', [LayupPageController::class, 'show'])->name('show');
     });
 
     Route::get('/{slug}', [PublicPortalController::class, 'page'])->name('team.page');
