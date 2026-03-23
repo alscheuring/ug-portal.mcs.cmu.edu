@@ -23,8 +23,6 @@ class Team extends Model
         'description',
         'manager_email',
         'is_active',
-        'contact_title',
-        'contact_content',
     ];
 
     /**

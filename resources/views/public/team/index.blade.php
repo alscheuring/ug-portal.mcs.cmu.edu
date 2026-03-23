@@ -120,27 +120,6 @@
                     </div>
                 @endif
 
-                <!-- Contact Information -->
-                <div class="eureka-card bg-gray-50 rounded-xl border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ $team->contact_title ?: 'Get in Touch' }}</h3>
-
-                    @if($team->contact_content)
-                        <div class="prose prose-sm max-w-none text-gray-600">
-                            {!! $team->contact_content !!}
-                        </div>
-                    @else
-                        <div class="space-y-3 text-sm">
-                            <div>
-                                <strong class="text-gray-700">Location:</strong><br>
-                                <span class="text-gray-600">
-                                    Carnegie Mellon University<br>
-                                    Mellon College of Science<br>
-                                    Pittsburgh, PA 15213
-                                </span>
-                            </div>
-                        </div>
-                    @endif
-                </div>
             </div>
         </div>
     </div>
