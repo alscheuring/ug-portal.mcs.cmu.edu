@@ -106,6 +106,12 @@ class LayupPage extends BasePage
      */
     public function getUrl(): string
     {
+        // Department home pages are accessible directly at /{team-slug}
+        if ($this->isDepartmentHome()) {
+            return url("/{$this->team->slug}");
+        }
+
+        // Regular pages are at /{team-slug}/pages/{page-slug}
         return url("/{$this->team->slug}/pages/{$this->slug}");
     }
 
