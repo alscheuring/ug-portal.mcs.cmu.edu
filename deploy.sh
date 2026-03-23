@@ -305,12 +305,12 @@ restart_services() {
 set_file_permissions() {
     log_info "Setting proper file permissions..."
 
-    # Set general file and directory permissions
-    find . -type f -exec chmod 644 {} \;
-    find . -type d -exec chmod 755 {} \;
+    # Set general file and directory permissions (exclude .git and other system directories)
+    find . -type f -not -path "./.git/*" -not -name ".env" -exec chmod 644 {} \; 2>/dev/null || true
+    find . -type d -not -path "./.git/*" -exec chmod 755 {} \; 2>/dev/null || true
 
     # Make artisan executable
-    chmod +x artisan
+    chmod +x artisan 2>/dev/null || true
 
     # Set storage and bootstrap/cache permissions
     if [ -d "storage" ]; then
