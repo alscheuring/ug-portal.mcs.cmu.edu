@@ -231,9 +231,9 @@ optimize_application() {
     php artisan filament:clear-cached-components 2>/dev/null || true
     php artisan icons:clear 2>/dev/null || true
 
-    # Clear Layup caches if available
-    log_info "Clearing Layup caches..."
-    php artisan layup:clear-cache 2>/dev/null || true
+    # Clear Layup caches if available (layup:clear-cache doesn't exist, skip for now)
+    log_info "Checking Layup caches..."
+    # php artisan layup:clear-cache 2>/dev/null || true  # Command doesn't exist
 
     # Create optimized caches
     log_info "Creating optimized caches..."
