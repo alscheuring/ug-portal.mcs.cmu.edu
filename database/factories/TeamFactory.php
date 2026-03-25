@@ -18,10 +18,10 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company(),
-            'slug' => $this->faker->slug(),
-            'description' => $this->faker->text(),
-            'manager_email' => $this->faker->email(),
+            'name' => fake()->company().' Department',
+            'slug' => fake()->slug(),
+            'description' => fake()->text(),
+            'manager_email' => fake()->safeEmail(),
             'is_active' => true,
         ];
     }

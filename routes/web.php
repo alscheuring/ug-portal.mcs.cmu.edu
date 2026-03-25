@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleOAuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\LayupPageController;
 use App\Http\Controllers\PublicPortalController;
 use Illuminate\Support\Facades\Auth;
@@ -92,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 });
 
+// Global calendar routes (public)
+Route::get('/calendar/events', [CalendarController::class, 'globalEvents'])->name('calendar.global.events');
+
 // Public team portal routes (must be last to avoid conflicts)
 Route::prefix('{team:slug}')->name('public.')->group(function () {
     Route::get('/', [PublicPortalController::class, 'indexOrPage'])->name('team.index');
@@ -99,6 +103,11 @@ Route::prefix('{team:slug}')->name('public.')->group(function () {
     Route::get('/announcements/{slug}', [PublicPortalController::class, 'announcement'])->name('team.announcements.show');
     Route::get('/polls', [PublicPortalController::class, 'polls'])->name('team.polls.index');
     Route::get('/polls/{poll}', [PublicPortalController::class, 'poll'])->name('team.polls.show');
+
+    // Calendar routes
+    Route::get('/calendar', [CalendarController::class, 'teamCalendar'])->name('calendar.team');
+    Route::get('/events/{event:slug}', [CalendarController::class, 'showEvent'])->name('calendar.event');
+    Route::get('/calendar/events', [CalendarController::class, 'teamEvents'])->name('calendar.team.events');
 
     // Layup pages routes
     Route::prefix('pages')->name('pages.')->group(function () {

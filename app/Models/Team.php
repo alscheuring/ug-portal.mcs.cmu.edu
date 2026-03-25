@@ -52,4 +52,20 @@ class Team extends Model
     {
         return $this->hasMany(LayupPage::class);
     }
+
+    /**
+     * Get the events that belong to this team.
+     */
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    /**
+     * Get the event feeds that belong to this team.
+     */
+    public function eventFeeds(): HasMany
+    {
+        return $this->hasMany(EventFeed::class);
+    }
 }
