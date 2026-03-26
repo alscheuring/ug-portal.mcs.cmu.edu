@@ -119,3 +119,4 @@ Route::prefix('{team:slug}')->name('public.')->group(function () {
 });
 
 require __DIR__.'/settings.php';
+Route::get('/{team:slug}/calendar-test', [CalendarController::class, 'testTeamCalendar']);

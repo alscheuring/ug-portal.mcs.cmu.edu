@@ -12,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class EventsTable
 {
@@ -23,19 +24,19 @@ class EventsTable
                     ->searchable()
                     ->sortable()
                     ->limit(50)
-                    ->description(fn ($record) => $record->summary),
+                    ->description(fn ($record) => $record ? Str::limit(strip_tags($record->description), 100) : null),
 
                 TextColumn::make('start_datetime')
                     ->label('Start Date')
                     ->dateTime('M j, Y g:i A')
                     ->sortable()
-                    ->color(fn ($record) => match (true) {
+                    ->color(fn ($record) => $record ? match (true) {
                         $record->isPast() => 'gray',
                         $record->isHappening() => 'success',
                         $record->start_datetime->isToday() => 'warning',
                         $record->start_datetime->isTomorrow() => 'primary',
                         default => null
-                    }),
+                    } : null),
 
                 TextColumn::make('end_datetime')
                     ->label('End Date')
@@ -45,7 +46,8 @@ class EventsTable
 
                 TextColumn::make('formatted_duration')
                     ->label('Duration')
-                    ->alignCenter(),
+                    ->alignCenter()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('location')
                     ->searchable()
@@ -57,19 +59,22 @@ class EventsTable
                     ->listWithLineBreaks()
                     ->bulleted()
                     ->limitList(2)
-                    ->expandableLimitedList(),
+                    ->expandableLimitedList()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('team.name')
                     ->label('Team')
                     ->sortable()
-                    ->visible(fn () => auth()->user()->isSuperAdmin()),
+                    ->visible(fn () => auth()->user()->isSuperAdmin())
+                    ->toggleable(),
 
                 TextColumn::make('author.name')
                     ->label('Author')
                     ->sortable()
                     ->searchable()
                     ->placeholder('System')
-                    ->visible(fn ($record) => $record->isManual()),
+                    ->visible(fn ($record) => $record && $record->isManual())
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 BadgeColumn::make('source_type')
                     ->label('Source')
@@ -80,7 +85,8 @@ class EventsTable
                     ->icons([
                         'heroicon-o-pencil' => 'manual',
                         'heroicon-o-arrow-down-tray' => 'imported',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_published')
                     ->label('Published')
@@ -88,7 +94,8 @@ class EventsTable
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
-                    ->falseColor('gray'),
+                    ->falseColor('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -101,7 +108,7 @@ class EventsTable
                     ->sortable()
                     ->placeholder('N/A')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->visible(fn ($record) => $record->isImported()),
+                    ->visible(fn ($record) => $record && $record->isImported()),
             ])
             ->filters([
                 SelectFilter::make('team_id')
@@ -190,17 +197,17 @@ class EventsTable
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->url(fn ($record) => $record->url)
+                    ->url(fn ($record) => $record?->url)
                     ->openUrlInNewTab(),
                 EditAction::make()
-                    ->visible(fn ($record) => $record->isManual()),
+                    ->visible(fn ($record) => $record && $record->isManual()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->action(function ($records) {
                             // Only delete manual events
-                            $manualRecords = $records->filter(fn ($record) => $record->isManual());
+                            $manualRecords = $records->filter(fn ($record) => $record && $record->isManual());
                             $manualRecords->each->delete();
 
                             if ($records->count() > $manualRecords->count()) {

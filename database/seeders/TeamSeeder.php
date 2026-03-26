@@ -43,8 +43,35 @@ class TeamSeeder extends Seeder
             ],
         ];
 
-        foreach ($teams as $team) {
-            Team::create($team);
+        foreach ($teams as $teamData) {
+            try {
+                $team = Team::where('slug', $teamData['slug'])->first();
+
+                if ($team) {
+                    // Update existing team with new data
+                    $team->update($teamData);
+                    $this->command->info("Updated existing team: {$teamData['name']} ({$teamData['slug']})");
+                } else {
+                    // Create new team
+                    Team::create($teamData);
+                    $this->command->info("Created new team: {$teamData['name']} ({$teamData['slug']})");
+                }
+            } catch (\Exception $e) {
+                $this->command->warn("Error processing team {$teamData['slug']}: ".$e->getMessage());
+
+                // Try one more time with updateOrCreate as fallback
+                try {
+                    Team::updateOrCreate(
+                        ['slug' => $teamData['slug']],
+                        $teamData
+                    );
+                    $this->command->info("Successfully processed team using fallback: {$teamData['name']}");
+                } catch (\Exception $fallbackError) {
+                    $this->command->error("Failed to create/update team {$teamData['slug']}: ".$fallbackError->getMessage());
+                }
+            }
         }
+
+        $this->command->info('Team seeding completed. Total teams: '.Team::count());
     }
 }

@@ -60,40 +60,24 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- Main Content --}}
         <div class="lg:col-span-2 space-y-6">
-            {{-- Event Description and Image --}}
-            @if($event->description || $event->image_url)
+            {{-- Event Description --}}
+            @if($event->description)
                 <div class="bg-white shadow rounded-lg">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">About This Event</h2>
-                        
-                        @if($event->description && $event->image_url)
-                            {{-- Both description and image: side by side layout --}}
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {{-- Event Image (left side) --}}
-                                <div class="lg:col-span-1">
-                                    <div class="bg-gray-50 rounded-lg overflow-hidden">
-                                        <img src="{{ $event->image_url }}" alt="{{ $event->title }}" class="w-full h-auto rounded-lg">
-                                    </div>
-                                </div>
-                                
-                                {{-- Event Description (right side) --}}
-                                <div class="lg:col-span-2">
-                                    <div class="prose prose-gray max-w-none">
-                                        {!! $event->description !!}
-                                    </div>
-                                </div>
-                            </div>
-                        @elseif($event->description)
-                            {{-- Description only --}}
-                            <div class="prose prose-gray max-w-none">
-                                {!! $event->description !!}
-                            </div>
-                        @elseif($event->image_url)
-                            {{-- Image only --}}
-                            <div class="bg-gray-50 rounded-lg overflow-hidden max-w-md">
-                                <img src="{{ $event->image_url }}" alt="{{ $event->title }}" class="w-full h-auto rounded-lg">
-                            </div>
-                        @endif
+                        <div class="prose prose-gray max-w-none">
+                            {!! $event->description !!}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Event Image --}}
+            @if($event->image_url)
+                <div class="bg-white shadow rounded-lg">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Event Image</h2>
+                        <img src="{{ $event->image_url }}" alt="{{ $event->title }}" class="w-full rounded-lg">
                     </div>
                 </div>
             @endif

@@ -17,17 +17,28 @@ class MenuSeeder extends Seeder
         $teams = Team::all();
 
         foreach ($teams as $team) {
-            // Create main navigation menu for each team
-            $menu = Menu::create([
-                'name' => $team->name . ' Navigation',
-                'slug' => $team->slug . '-nav',
-                'description' => 'Main navigation menu for ' . $team->name,
-                'team_id' => $team->id,
-                'is_active' => true,
-            ]);
+            $menuSlug = $team->slug.'-nav';
 
-            // Create default menu items
-            $this->createDefaultMenuItems($menu, $team);
+            // Create or find main navigation menu for each team
+            $menu = Menu::firstOrCreate(
+                ['slug' => $menuSlug, 'team_id' => $team->id],
+                [
+                    'name' => $team->name.' Navigation',
+                    'slug' => $menuSlug,
+                    'description' => 'Main navigation menu for '.$team->name,
+                    'team_id' => $team->id,
+                    'is_active' => true,
+                ]
+            );
+
+            if ($menu->wasRecentlyCreated) {
+                $this->command->info("      ✓ Created menu: {$menu->name}");
+                // Create default menu items only for new menus
+                $this->createDefaultMenuItems($menu, $team);
+            } else {
+                $this->command->info("      → Menu already exists: {$menu->name}");
+                // Optionally update existing menu items here if needed
+            }
         }
     }
 
@@ -44,7 +55,7 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => false,
             'sort_order' => 10,
             'is_visible' => true,
-            'description' => 'About ' . $team->name,
+            'description' => 'About '.$team->name,
         ];
 
         // Research section
@@ -56,7 +67,7 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => false,
             'sort_order' => 20,
             'is_visible' => true,
-            'description' => 'Research in ' . $team->name,
+            'description' => 'Research in '.$team->name,
         ];
 
         // People section
@@ -68,7 +79,7 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => false,
             'sort_order' => 30,
             'is_visible' => true,
-            'description' => 'Faculty and staff in ' . $team->name,
+            'description' => 'Faculty and staff in '.$team->name,
         ];
 
         // Graduate Programs
@@ -80,7 +91,7 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => false,
             'sort_order' => 40,
             'is_visible' => true,
-            'description' => 'Graduate programs in ' . $team->name,
+            'description' => 'Graduate programs in '.$team->name,
         ];
 
         // Undergraduate Programs
@@ -92,7 +103,7 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => false,
             'sort_order' => 50,
             'is_visible' => true,
-            'description' => 'Undergraduate programs in ' . $team->name,
+            'description' => 'Undergraduate programs in '.$team->name,
         ];
 
         // External link to main department
@@ -104,12 +115,23 @@ class MenuSeeder extends Seeder
             'opens_in_new_tab' => true,
             'sort_order' => 60,
             'is_visible' => true,
-            'description' => 'Visit the main ' . $team->name . ' website',
+            'description' => 'Visit the main '.$team->name.' website',
             'icon' => 'heroicon-o-arrow-top-right-on-square',
         ];
 
         foreach ($menuItems as $item) {
-            MenuItem::create($item);
+            try {
+                MenuItem::firstOrCreate(
+                    [
+                        'menu_id' => $item['menu_id'],
+                        'title' => $item['title'],
+                    ],
+                    $item
+                );
+                $this->command->info("        → Menu item: {$item['title']}");
+            } catch (\Exception $e) {
+                $this->command->warn("        Warning: Could not create menu item '{$item['title']}': ".$e->getMessage());
+            }
         }
     }
 

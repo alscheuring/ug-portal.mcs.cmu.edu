@@ -106,7 +106,7 @@ class EventFeedImporter
      */
     protected function extractCmuEvents(array $data): array
     {
-        return $data['events'] ?? $data;
+        return $data['data'] ?? $data;
     }
 
     /**
@@ -220,8 +220,11 @@ class EventFeedImporter
 
                 case 'location':
                 case 'info_url':
-                case 'image_url':
                     $mappedData[$internalField] = $this->sanitizeText($value, 255);
+                    break;
+
+                case 'image_url':
+                    $mappedData[$internalField] = $this->enhanceImageUrl($this->sanitizeText($value, 255));
                     break;
 
                 case 'external_id':
@@ -440,5 +443,23 @@ class EventFeedImporter
         $summary = implode(', ', $parts);
 
         return "Successfully processed {$total} events: {$summary}";
+    }
+
+    /**
+     * Enhance image URL quality for known image services.
+     */
+    protected function enhanceImageUrl(?string $imageUrl): ?string
+    {
+        if (! $imageUrl) {
+            return null;
+        }
+
+        // Enhance CMU Events image URLs by increasing dimensions
+        if (strpos($imageUrl, 'events.cmu.edu/live/image/') !== false) {
+            // Replace small dimensions with larger ones for better quality
+            $imageUrl = preg_replace('/width\/\d+\/height\/\d+/', 'width/400/height/400', $imageUrl);
+        }
+
+        return $imageUrl;
     }
 }

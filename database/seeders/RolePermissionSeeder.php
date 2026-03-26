@@ -17,6 +17,8 @@ class RolePermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
+        $this->command->info('   📋 Creating permissions...');
+
         // Create permissions
         $permissions = [
             // User management
@@ -65,16 +67,23 @@ class RolePermissionSeeder extends Seeder
             'participate polls',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($permissions as $permissionName) {
+            try {
+                Permission::firstOrCreate(['name' => $permissionName]);
+            } catch (\Exception $e) {
+                $this->command->warn("      Warning: Could not create permission '{$permissionName}': ".$e->getMessage());
+            }
         }
 
-        // Create roles and assign permissions
-        $superAdminRole = Role::create(['name' => 'SuperAdmin']);
-        $superAdminRole->givePermissionTo(Permission::all());
+        $this->command->info('   👤 Creating roles...');
 
-        $teamAdminRole = Role::create(['name' => 'TeamAdmin']);
-        $teamAdminRole->givePermissionTo([
+        // Create roles and assign permissions
+        $superAdminRole = Role::firstOrCreate(['name' => 'SuperAdmin']);
+        $superAdminRole->syncPermissions(Permission::all());
+        $this->command->info('      ✓ SuperAdmin role configured');
+
+        $teamAdminRole = Role::firstOrCreate(['name' => 'TeamAdmin']);
+        $teamAdminPermissions = [
             'view users',
             'create users',
             'edit users',
@@ -101,14 +110,21 @@ class RolePermissionSeeder extends Seeder
             'create polls',
             'edit polls',
             'delete polls',
-        ]);
+        ];
+        $teamAdminRole->syncPermissions($teamAdminPermissions);
+        $this->command->info('      ✓ TeamAdmin role configured');
 
-        $studentRole = Role::create(['name' => 'Student']);
-        $studentRole->givePermissionTo([
+        $studentRole = Role::firstOrCreate(['name' => 'Student']);
+        $studentPermissions = [
             'view content',
             'view announcements',
             'view polls',
             'participate polls',
-        ]);
+        ];
+        $studentRole->syncPermissions($studentPermissions);
+        $this->command->info('      ✓ Student role configured');
+
+        // Reset cached roles and permissions after changes
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }
