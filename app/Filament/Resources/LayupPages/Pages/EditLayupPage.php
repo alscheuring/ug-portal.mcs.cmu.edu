@@ -89,6 +89,17 @@ class EditLayupPage extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        // Set published_at when status changes to published
+        if ($data['status'] === 'published' &&
+            ($this->record->status !== 'published' || $this->record->published_at === null)) {
+            $data['published_at'] = now();
+        }
+
+        // Clear published_at when status changes from published to draft
+        if ($data['status'] !== 'published' && $this->record->status === 'published') {
+            $data['published_at'] = null;
+        }
+
         // Handle sidebar assignments separately
         $sidebarAssignments = $data['sidebar_assignments'] ?? [];
         unset($data['sidebar_assignments']);

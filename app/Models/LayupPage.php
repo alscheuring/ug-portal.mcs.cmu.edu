@@ -37,6 +37,27 @@ class LayupPage extends BasePage
     }
 
     /**
+     * Automatically handle published_at when status changes.
+     */
+    public function setStatusAttribute($value): void
+    {
+        $originalStatus = $this->attributes['status'] ?? null;
+
+        $this->attributes['status'] = $value;
+
+        // If changing to published and published_at is not set, set it now
+        if ($value === 'published' &&
+            ($originalStatus !== 'published' || $this->published_at === null)) {
+            $this->attributes['published_at'] = now();
+        }
+
+        // If changing from published to another status, clear published_at
+        if ($value !== 'published' && $originalStatus === 'published') {
+            $this->attributes['published_at'] = null;
+        }
+    }
+
+    /**
      * Get the team this page belongs to.
      */
     public function team(): BelongsTo
